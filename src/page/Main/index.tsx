@@ -1,6 +1,15 @@
 import React, {useCallback, useMemo, useRef, useState} from "react";
 import {Button, View, Text, StyleSheet, SafeAreaView, StatusBar, StatusBarIOS} from "react-native";
 import {AppStackNavigationProp} from "../stack/AppStack";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import {StageGame} from "../Game/StageGame";
+import { ChallengeGame } from "../ChallengeGame";
+import {Achieve} from "../Achieve";
+import {StageGameStack} from "../stack/StageGameStack";
+
+const Tab = createBottomTabNavigator()
 
 interface Props {
 
@@ -8,16 +17,30 @@ interface Props {
 
 export const Main = ({navigation} : Props & AppStackNavigationProp) => {
 
-  const goStageGame = useCallback(() => {
-    navigation.navigate('StageGame')
-  }, []);
-
   return (
-      <SafeAreaView>
-          <StatusBar hidden></StatusBar>
-        <Text>Pattern Game</Text>
-        <Button title={"GO STAGE"} onPress={goStageGame}></Button>
-      </SafeAreaView>
+          <Tab.Navigator
+              screenOptions={({ route }) => ({
+                  tabBarIcon: ({ focused, color, size }) => {
+                      let iconName;
+                      if (route.name === 'Main') {
+                          iconName = focused
+                              ? 'ios-information-circle'
+                              : 'ios-information-circle-outline';
+                      } else if (route.name === 'Settings') {
+                          iconName = focused ? 'ios-list-box' : 'ios-list';
+                      }
+
+                      return <Ionicons name={iconName} size={size} color={color} />;
+                  },
+
+                  tabBarActiveTintColor: 'tomato',
+                  tabBarInactiveTintColor: 'gray',
+              })}
+          >
+              <Tab.Screen name="StageGame" component={StageGameStack} />
+              <Tab.Screen name={"ChallengeGame"} component={ChallengeGame}></Tab.Screen>
+              <Tab.Screen name={"Achieve"} component={Achieve}></Tab.Screen>
+          </Tab.Navigator>
   );
 };
 

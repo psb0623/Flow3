@@ -5,12 +5,17 @@ import {StageStartButton} from "../../components/StageStartButton";
 import {FlatGrid} from "react-native-super-grid";
 import {AppStackNavigationProp} from "../stack/AppStack";
 import {BackButton} from "../../components/BackButton";
+import {createStackNavigator, StackNavigationProp} from "@react-navigation/stack";
+import {StageGameScene} from "./StageGameScene";
+import {StageGameStackNavigationProp, StageGameStackRouteProp} from "../stack/StageGameStack";
 
 type Props = {
 
 };
 
-export const StageGame = ({navigation}: Props & AppStackNavigationProp) => {
+const Stack = createStackNavigator()
+
+export const StageGame = ({navigation}: Props & StageGameStackRouteProp & StageGameStackNavigationProp) => {
 
     const stage = useRef(new Array(100).fill(null));
 
@@ -20,16 +25,16 @@ export const StageGame = ({navigation}: Props & AppStackNavigationProp) => {
 
     return (
         <View>
-            <BackButton navigation={navigation}></BackButton>
             <FlatGrid data={stage.current}
                       renderItem={({index}) => <StageStartButton key={index} title={index.toString()}
-                      onPressed={() => {
-                          goStageGameScene(index)
-                      }} />}
+                                                                 onPressed={() => {
+                                                                     goStageGameScene(index)
+                                                                 }} />}
                       keyExtractor={() => {
                           return Math.random().toString()
                       }}
-                  />
+            />
+            <Stack.Screen name={'StageGameScene'} component={StageGameScene} />
         </View>
     );
 };

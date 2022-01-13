@@ -1,14 +1,11 @@
 import {createStackNavigator, StackNavigationProp} from "@react-navigation/stack";
 import { Main } from "../Main";
 import { NavigationContainer } from "@react-navigation/native";
-import {StageGame} from "../Game";
-import {StageGameScene} from "../Game/StageGameScene";
-
+import {BeforeStart} from "../BeforeStart";
 
 export type AppStackType = {
     Main : undefined,
-    StageGame: undefined,
-    StageGameScene: {gameStageNumber: number}
+    BeforeStart: undefined,
 }
 
 export type AppTypes = keyof AppStackType
@@ -19,19 +16,22 @@ export type AppStackNavigationProp = {
 
 export type AppStackRouteProp = Required<{
     route: Required<{
-        params: AppStackType[keyof AppStackType]
+        params: AppStackType[AppTypes]
     }>
 }>
 
 const Stack = createStackNavigator<AppStackType>();
 
-export const AppStack = () => {
+type Props = {
+
+}
+
+export const AppStack = ( {} : Props ) => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name={'Main'} component={Main} />
-        <Stack.Screen name={'StageGame'} component={StageGame} />
-         <Stack.Screen name={'StageGameScene'} component={StageGameScene} />
+          <Stack.Screen name={'BeforeStart'} component={BeforeStart}></Stack.Screen>
+          <Stack.Screen name={'Main'} component={Main} />
       </Stack.Navigator>
     </NavigationContainer>
   );
