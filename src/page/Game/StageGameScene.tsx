@@ -18,7 +18,7 @@ export const StageGameScene = ({navigation, route : { params }}: Props) => {
     }, [])
 
     return (
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             <BackButton navigation={navigation}></BackButton>
             <Button title={"next"} onPress={() => {goNextGameStage(gameStageNumber + 1)}}></Button>
             <Text>{gameStageNumber}</Text>
@@ -29,14 +29,7 @@ export const StageGameScene = ({navigation, route : { params }}: Props) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    box: {
-        backgroundColor: "#61dafb",
-        width: 80,
-        height: 80,
-        borderRadius: 4,
+        width: "100%",
+        height: "100%"
     },
 });

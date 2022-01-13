@@ -15,6 +15,6 @@ export default function App() {
   }, [setLoad])
 
   return (
-        !load ? <Splash/>: <AppStack lo/>
+        !load ? <Splash/>: <AppStack/>
   );
 };
