@@ -1,9 +1,19 @@
 import * as React from "react";
-import { Button, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import { AppStack } from "./src/page/util/AppStack";
+import { AppStack } from "./src/page/stack/AppStack";
+import {useEffect, useState} from "react";
+import {Splash} from "./src/page/Splash";
 
 export default function App() {
-  return <AppStack></AppStack>;
-}
+
+  const [load, setLoad] = useState<Boolean>(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoad(true)
+    }, 1000)
+  }, [setLoad])
+
+  return (
+    !load ? <Splash/>: <AppStack/>
+  );
+};
