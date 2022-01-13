@@ -1,26 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from "react";
+import { Button, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { AppStack } from "./src/page/util/AppStack";
 
 export default function App() {
-  return (
-    <>
-      <StatusBar hidden />
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-        <Text>Naver</Text>
-        <Text>진성호</Text>
-        <Text>진성호</Text>
-        <Text>진성호</Text>
-      </View>
-    </>
-  );
+  return <AppStack></AppStack>;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
