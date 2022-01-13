@@ -9,8 +9,9 @@ export const AppStack = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name={"Loading"} component={Loading} />
-        <Stack.Screen name={"Main"} component={Main} />
+        <Stack.Screen name={PageTypes.Loading} component={Loading} />
+        <Stack.Screen name={PageTypes.Main} component={Main} />
+          <Stack.Screen name={PageTypes.Game} component={Game} />
       </Stack.Navigator>
     </NavigationContainer>
   );

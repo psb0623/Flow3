@@ -1,13 +1,19 @@
 import { useCallback } from "react";
 import { Button, View } from "react-native";
+import {StackNavigationProp} from "@react-navigation/stack";
+import {PageTypes} from "../util/PageType";
 
-export const Main = ({navigation}) => {
+interface Props {
+  navigation: StackNavigationProp<any, 'Login'>;
+}
+
+export const Main = ({navigation} : Props) => {
   const goGame = useCallback(() => {
-    console.log(navigation)
+    navigation.navigate('Game')
   }, []);
   return (
     <View>
-      {"main"}
+      <Button title={"시작"} onPress={goGame}></Button>
     </View>
   );
 };
