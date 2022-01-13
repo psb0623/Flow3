@@ -7,13 +7,13 @@ export default function App() {
 
   const [load, setLoad] = useState<Boolean>(false)
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoad(true)
-    }, 1000)
-  }, [setLoad])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoad(true)
+  //   }, 1000)
+  // }, [setLoad])
 
   return (
-    !load ? <Splash/>: <AppStack/>
+    !load ? <AppStack/>: <AppStack/>
   );
 };

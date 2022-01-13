@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, FlatList, SafeAreaView, StyleSheet} from "react-native";
+import {Button, FlatList, SafeAreaView, StyleSheet, View} from "react-native";
 import {useCallback, useLayoutEffect, useMemo, useRef} from "react";
 import {StageStartButton} from "../../components/StageStartButton";
 import {FlatGrid} from "react-native-super-grid";
@@ -19,7 +19,7 @@ export const StageGame = ({navigation}: Props & AppStackNavigationProp) => {
     }, [])
 
     return (
-        <SafeAreaView>
+        <View>
             <BackButton navigation={navigation}></BackButton>
             <FlatGrid data={stage.current}
                       renderItem={({index}) => <StageStartButton key={index} title={index.toString()}
@@ -29,8 +29,8 @@ export const StageGame = ({navigation}: Props & AppStackNavigationProp) => {
                       keyExtractor={() => {
                           return Math.random().toString()
                       }}
-                      />
-        </SafeAreaView>
+                  />
+        </View>
     );
 };
 

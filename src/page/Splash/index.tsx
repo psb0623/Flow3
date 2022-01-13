@@ -1,7 +1,7 @@
-import {SafeAreaView, Text, View} from "react-native";
+import { Text, View} from "react-native";
 
 export const Splash = () => {
-  return <SafeAreaView>
+  return <View>
     <Text>Loading...</Text>
-  </SafeAreaView>
+  </View>
 };

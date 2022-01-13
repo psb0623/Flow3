@@ -17,11 +17,11 @@ export type AppStackNavigationProp = {
     navigation: StackNavigationProp<AppStackType, AppTypes>;
 }
 
-export type AppStackRouteProp = {
-    route: {
+export type AppStackRouteProp = Required<{
+    route: Required<{
         params: AppStackType[keyof AppStackType]
-    }
-}
+    }>
+}>
 
 const Stack = createStackNavigator<AppStackType>();
 
