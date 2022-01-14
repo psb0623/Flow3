@@ -1,11 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import ReactNative, {StyleSheet, View, Text, Vibration} from 'react-native';
 import {
   PanGestureHandler,
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
+  Easing,
+  EasingNode,
   runOnJS,
   runOnUI,
   useAnimatedGestureHandler,
@@ -34,6 +36,24 @@ interface PropsType {
 
 export function Pattern(props: PropsType) {
   const [isError, setIsError] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 10,
+      easing: EasingNode.linear,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 1000,
+      easing: EasingNode.linear,
+    }).start();
+  };
+
   const canTouch = useSharedValue(true);
   const patternPoints = useSharedValue<Point[] | null>(null);
   const selectedIndexes = useSharedValue<number[]>([]);
@@ -88,6 +108,7 @@ export function Pattern(props: PropsType) {
       canTouch.value = false;
       if (!props.onCheck(res)) {
         setIsError(true);
+        fadeOut();
         const closeError = () => setIsError(false);
         runOnUI(() => {
           cancelAnimation(msgX);
@@ -131,6 +152,8 @@ export function Pattern(props: PropsType) {
               R.value * R.value
             ) {
               selected.push(idx);
+              runOnJS(Vibration.vibrate)(50);
+              runOnJS(fadeIn)();
               return false;
             }
             return true;
@@ -151,6 +174,7 @@ export function Pattern(props: PropsType) {
             ) {
               if (selectedIndexes.value.indexOf(idx) < 0) {
                 selectedIndexes.value = [...selectedIndexes.value, idx];
+                runOnJS(Vibration.vibrate)(50);
               }
               return false;
             }
@@ -204,7 +228,7 @@ export function Pattern(props: PropsType) {
                   });
                   const outer = useAnimatedStyle(() => {
                     return {
-                      borderWidth: 2,
+                      borderWidth: 0,
                       width: 2 * R.value,
                       height: 2 * R.value,
                       alignItems: 'center',
@@ -216,9 +240,9 @@ export function Pattern(props: PropsType) {
                   });
                   const inner = useAnimatedStyle(() => {
                     return {
-                      width: R.value * 0.8,
-                      height: R.value * 0.8,
-                      borderRadius: R.value * 0.8,
+                      width: R.value * 0.4,
+                      height: R.value * 0.4,
+                      borderRadius: R.value * 0.4,
                       backgroundColor: patternColor.value,
                     };
                   });
@@ -235,6 +259,7 @@ export function Pattern(props: PropsType) {
                 strokeWidth={3}
                 animatedProps={animatedProps}
                 stroke={isError ? props.errorColor : props.activeColor}
+                opacity={fadeAnim}
               />
             </Svg>
           </Animated.View>
