@@ -1,271 +1,273 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, Text} from 'react-native';
 import {
-    PanGestureHandler,
-    TapGestureHandler,
-} from "react-native-gesture-handler";
+  PanGestureHandler,
+  TapGestureHandler,
+} from 'react-native-gesture-handler';
 import Animated, {
-    cancelAnimation,
-    runOnJS,
-    runOnUI,
-    useAnimatedGestureHandler,
-    useAnimatedProps,
-    useAnimatedStyle,
-    useDerivedValue,
-    useSharedValue,
-    withSpring,
-} from "react-native-reanimated";
-import Svg, { Path } from "react-native-svg";
-import {Point} from "./Point"
-import {GestureEvent} from "react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon";
+  cancelAnimation,
+  runOnJS,
+  runOnUI,
+  useAnimatedGestureHandler,
+  useAnimatedProps,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
+import Svg, {Path} from 'react-native-svg';
+import {Point} from './Point';
+import {GestureEvent} from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 interface PropsType {
-    message: string;
-    rowCount: number;
-    errorColor: string;
-    columnCount: number;
-    activeColor: string;
-    inactiveColor: string;
-    patternMargin: number;
-    onCheck: (res: string) => boolean;
+  message: string;
+  rowCount: number;
+  errorColor: string;
+  columnCount: number;
+  activeColor: string;
+  inactiveColor: string;
+  patternMargin: number;
+  onCheck: (res: string) => boolean;
 }
 
 export function Pattern(props: PropsType) {
-    const [isError, setIsError] = useState(false);
-    const canTouch = useSharedValue(true);
-    const patternPoints = useSharedValue<Point[] | null>(null);
-    const selectedIndexes = useSharedValue<number[]>([]);
-    const endPoint = useSharedValue<Point | null>(null);
-    const containerLayout = useSharedValue({ width: 0, height: 0, min: 0 });
-    const R = useDerivedValue(
-        () =>
-            (containerLayout.value.min / props.rowCount - props.patternMargin * 2) / 2
-    );
-    const cvc = useAnimatedStyle(() => ({
-        flexDirection: "row",
-        flexWrap: "wrap",
-        marginBottom: `${
-            Math.max(
-                0,
-                containerLayout.value.height / containerLayout.value.width - 1.25
-            ) * 50
-        }%`,
-        width: containerLayout.value.min,
-        height: containerLayout.value.min,
-    }));
-    const msgX = useSharedValue(0);
-    const msgColor = { color: isError ? props.errorColor : props.activeColor };
-    const msgStyle = useAnimatedStyle(() => {
-        return { transform: [{ translateX: msgX.value }] };
+  const [isError, setIsError] = useState(false);
+  const canTouch = useSharedValue(true);
+  const patternPoints = useSharedValue<Point[] | null>(null);
+  const selectedIndexes = useSharedValue<number[]>([]);
+  const endPoint = useSharedValue<Point | null>(null);
+  const containerLayout = useSharedValue({width: 0, height: 0, min: 0});
+  const R = useDerivedValue(
+    () =>
+      (containerLayout.value.min / props.rowCount - props.patternMargin * 2) /
+      2,
+  );
+  const cvc = useAnimatedStyle(() => ({
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: `${
+      Math.max(
+        0,
+        containerLayout.value.height / containerLayout.value.width - 1.25,
+      ) * 50
+    }%`,
+    width: containerLayout.value.min,
+    height: containerLayout.value.min,
+  }));
+  const msgX = useSharedValue(0);
+  const msgColor = {color: isError ? props.errorColor : props.activeColor};
+  const msgStyle = useAnimatedStyle(() => {
+    return {transform: [{translateX: msgX.value}]};
+  });
+  const onContainerLayout = ({
+    nativeEvent: {
+      layout: {x, y, width, height},
+    },
+  }) =>
+    (containerLayout.value = {
+      width,
+      height,
+      min: Math.min(width, height),
     });
-    const onContainerLayout = ({
-                                   nativeEvent: {
-                                       layout: { x, y, width, height },
-                                   },
-                               }) =>
-        (containerLayout.value = {
-            width,
-            height,
-            min: Math.min(width, height),
+  const onPatternLayout = ({nativeEvent: {layout}}) => {
+    const points: Array<Point> = [];
+    for (let i = 0; i < props.rowCount; i++) {
+      for (let j = 0; j < props.columnCount; j++) {
+        points.push({
+          x: layout.x + (layout.width / props.columnCount) * (j + 0.5),
+          y: layout.y + (layout.height / props.rowCount) * (i + 0.5),
         });
-    const onPatternLayout = ({ nativeEvent: { layout } }) => {
-        const points : Array<Point> = [];
-        for (let i = 0; i < props.rowCount; i++) {
-            for (let j = 0; j < props.columnCount; j++) {
-                points.push({
-                    x: layout.x + (layout.width / props.columnCount) * (j + 0.5),
-                    y: layout.y + (layout.height / props.rowCount) * (i + 0.5),
-                });
-            }
-        }
-        patternPoints.value = points;
-    };
-    const onEndJS = (res) => {
-        if (props.onCheck) {
-            canTouch.value = false;
-            if (!props.onCheck(res)) {
-                setIsError(true);
-                const closeError = () => setIsError(false);
-                runOnUI(() => {
-                    cancelAnimation(msgX);
-                    //修复iOS上原地spring不动的问题。
-                    msgX.value = withSpring(
-                        msgX.value === 0 ? 0.1 : 0,
-                        {
-                            stiffness: 2000,
-                            damping: 10,
-                            mass: 1,
-                            velocity: 2000,
-                        },
-                        (finished) => {
-                            runOnJS(closeError)();
-                            canTouch.value = true;
-                            selectedIndexes.value = [];
-                        }
-                    );
-                })();
-            } else {
-                setIsError(false);
-                setTimeout(() => {
-                    selectedIndexes.value = [];
-                    canTouch.value = true;
-                }, 1000);
-            }
-        }
-    };
-    const panHandler : (event: GestureEvent<any>) => void = useAnimatedGestureHandler({
-        onStart: (evt) => {
+      }
+    }
+    patternPoints.value = points;
+  };
+  const onEndJS = (res) => {
+    if (props.onCheck) {
+      canTouch.value = false;
+      if (!props.onCheck(res)) {
+        setIsError(true);
+        const closeError = () => setIsError(false);
+        runOnUI(() => {
+          cancelAnimation(msgX);
+          //修复iOS上原地spring不动的问题。
+          msgX.value = withSpring(
+            msgX.value === 0 ? 0.1 : 0,
+            {
+              stiffness: 2000,
+              damping: 10,
+              mass: 1,
+              velocity: 2000,
+            },
+            (finished) => {
+              runOnJS(closeError)();
+              canTouch.value = true;
+              selectedIndexes.value = [];
+            },
+          );
+        })();
+      } else {
+        setIsError(false);
+        setTimeout(() => {
+          selectedIndexes.value = [];
+          canTouch.value = true;
+        }, 1000);
+      }
+    }
+  };
+  const panHandler: (event: GestureEvent<any>) => void =
+    useAnimatedGestureHandler({
+      onStart: (evt) => {
+        if (
+          canTouch.value &&
+          patternPoints.value &&
+          selectedIndexes.value.length === 0
+        ) {
+          const selected: number[] = [];
+          patternPoints.value.every((p, idx) => {
             if (
-                canTouch.value &&
-                patternPoints.value &&
-                selectedIndexes.value.length === 0
+              (p.x - evt.x) * (p.x - evt.x) + (p.y - evt.y) * (p.y - evt.y) <
+              R.value * R.value
             ) {
-                const selected : number[] = [];
-                patternPoints.value.every((p, idx) => {
-                    if (
-                        (p.x - evt.x) * (p.x - evt.x) + (p.y - evt.y) * (p.y - evt.y) <
-                        R.value * R.value
-                    ) {
-                        selected.push(idx);
-                        return false;
-                    }
-                    return true;
-                });
-                selectedIndexes.value = selected;
+              selected.push(idx);
+              return false;
             }
-        },
-        onActive: (evt) => {
+            return true;
+          });
+          selectedIndexes.value = selected;
+        }
+      },
+      onActive: (evt) => {
+        if (
+          canTouch.value &&
+          patternPoints.value &&
+          selectedIndexes.value.length > 0
+        ) {
+          patternPoints.value.every((p, idx) => {
             if (
-                canTouch.value &&
-                patternPoints.value &&
-                selectedIndexes.value.length > 0
+              (p.x - evt.x) * (p.x - evt.x) + (p.y - evt.y) * (p.y - evt.y) <
+              R.value * R.value
             ) {
-                patternPoints.value.every((p, idx) => {
-                    if (
-                        (p.x - evt.x) * (p.x - evt.x) + (p.y - evt.y) * (p.y - evt.y) <
-                        R.value * R.value
-                    ) {
-                        if (selectedIndexes.value.indexOf(idx) < 0) {
-                            selectedIndexes.value = [...selectedIndexes.value, idx];
-                        }
-                        return false;
-                    }
-                    return true;
-                });
-                endPoint.value = { x: evt.x, y: evt.y };
+              if (selectedIndexes.value.indexOf(idx) < 0) {
+                selectedIndexes.value = [...selectedIndexes.value, idx];
+              }
+              return false;
             }
-        },
-        onEnd: (evt) => {
-            if (!canTouch.value) return;
-            endPoint.value = null;
-            if (selectedIndexes.value.length > 0)
-                runOnJS(onEndJS)(selectedIndexes.value.join(""));
-        },
+            return true;
+          });
+          endPoint.value = {x: evt.x, y: evt.y};
+        }
+      },
+      onEnd: (evt) => {
+        if (!canTouch.value) return;
+        endPoint.value = null;
+        if (selectedIndexes.value.length > 0)
+          runOnJS(onEndJS)(selectedIndexes.value.join(''));
+      },
     });
-    const animatedProps = useAnimatedProps(() => {
-        let d = "";
-        selectedIndexes.value.forEach((idx) => {
-            if(patternPoints.value != null) {
-                d += !d ? " M" : " L";
-                d += ` ${patternPoints?.value[idx].x},${patternPoints.value[idx].y}`;
-            }
-        });
-        if (d && endPoint.value) d += ` L${endPoint.value.x},${endPoint.value.y}`;
-        if (!d) d = "M-1,-1";
-        return { d };
+  const animatedProps = useAnimatedProps(() => {
+    let d = '';
+    selectedIndexes.value.forEach((idx) => {
+      if (patternPoints.value != null) {
+        d += !d ? ' M' : ' L';
+        d += ` ${patternPoints?.value[idx].x},${patternPoints.value[idx].y}`;
+      }
     });
+    if (d && endPoint.value) d += ` L${endPoint.value.x},${endPoint.value.y}`;
+    if (!d) d = 'M-1,-1';
+    return {d};
+  });
 
-    return (
-        <PanGestureHandler onGestureEvent={panHandler}>
-            <Animated.View style={styles.container} onLayout={onContainerLayout}>
-                <TapGestureHandler onGestureEvent={panHandler}>
-                    <Animated.View style={styles.container}>
-                        <View style={styles.msgc}>
-                            <Animated.Text style={[msgColor, msgStyle]}>
-                                {props.message}
-                            </Animated.Text>
-                        </View>
-                        <Animated.View style={cvc} onLayout={onPatternLayout}>
-                            {Array(props.rowCount * props.columnCount)
-                                .fill(0)
-                                .map((_, idx) => {
-                                    const patternColor = useDerivedValue(() => {
-                                        if (selectedIndexes.value.findIndex((v) => v === idx) < 0) {
-                                            return props.inactiveColor;
-                                        } else if (isError) {
-                                            return props.errorColor;
-                                        } else {
-                                            return props.activeColor;
-                                        }
-                                    });
-                                    const outer = useAnimatedStyle(() => {
-                                        return {
-                                            borderWidth: 2,
-                                            width: 2 * R.value,
-                                            height: 2 * R.value,
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            borderColor: patternColor.value,
-                                            borderRadius: 2 * R.value,
-                                            margin: props.patternMargin,
-                                        };
-                                    });
-                                    const inner = useAnimatedStyle(() => {
-                                        return {
-                                            width: R.value * 0.8,
-                                            height: R.value * 0.8,
-                                            borderRadius: R.value * 0.8,
-                                            backgroundColor: patternColor.value,
-                                        };
-                                    });
-                                    return (
-                                        <Animated.View key={idx} style={outer}>
-                                            <Animated.View style={inner} />
-                                        </Animated.View>
-                                    );
-                                })}
-                        </Animated.View>
-                        <Svg style={styles.svg} width="100%" height="100%">
-                            <AnimatedPath
-                                fill="none"
-                                strokeWidth={3}
-                                animatedProps={animatedProps}
-                                stroke={isError ? props.errorColor : props.activeColor}
-                            />
-                        </Svg>
+  return (
+    <PanGestureHandler onGestureEvent={panHandler}>
+      <Animated.View style={styles.container} onLayout={onContainerLayout}>
+        <TapGestureHandler onGestureEvent={panHandler}>
+          <Animated.View style={styles.container}>
+            <View style={styles.msgc}>
+              <Animated.Text style={[msgColor, msgStyle]}>
+                {props.message}
+              </Animated.Text>
+            </View>
+            <Animated.View style={cvc} onLayout={onPatternLayout}>
+              {Array(props.rowCount * props.columnCount)
+                .fill(0)
+                .map((_, idx) => {
+                  const patternColor = useDerivedValue(() => {
+                    if (selectedIndexes.value.findIndex((v) => v === idx) < 0) {
+                      return props.inactiveColor;
+                    } else if (isError) {
+                      return props.errorColor;
+                    } else {
+                      return props.activeColor;
+                    }
+                  });
+                  const outer = useAnimatedStyle(() => {
+                    return {
+                      borderWidth: 2,
+                      width: 2 * R.value,
+                      height: 2 * R.value,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderColor: patternColor.value,
+                      borderRadius: 2 * R.value,
+                      margin: props.patternMargin,
+                    };
+                  });
+                  const inner = useAnimatedStyle(() => {
+                    return {
+                      width: R.value * 0.8,
+                      height: R.value * 0.8,
+                      borderRadius: R.value * 0.8,
+                      backgroundColor: patternColor.value,
+                    };
+                  });
+                  return (
+                    <Animated.View key={idx} style={outer}>
+                      <Animated.View style={inner} />
                     </Animated.View>
-                </TapGestureHandler>
+                  );
+                })}
             </Animated.View>
-        </PanGestureHandler>
-    );
+            <Svg style={styles.svg} width="100%" height="100%">
+              <AnimatedPath
+                fill="none"
+                strokeWidth={3}
+                animatedProps={animatedProps}
+                stroke={isError ? props.errorColor : props.activeColor}
+              />
+            </Svg>
+          </Animated.View>
+        </TapGestureHandler>
+      </Animated.View>
+    </PanGestureHandler>
+  );
 }
 
 Pattern.defaultProps = {
-    message: "",
-    rowCount: 3,
-    columnCount: 3,
-    patternMargin: 25,
-    inactiveColor: "#8E91A8",
-    activeColor: "#5FA8FC",
-    errorColor: "#D93609",
+  message: '',
+  rowCount: 3,
+  columnCount: 3,
+  patternMargin: 25,
+  inactiveColor: '#8E91A8',
+  activeColor: '#5FA8FC',
+  errorColor: '#D93609',
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignSelf: "stretch",
-        alignItems: "center",
-    },
-    msgc: {
-        flex: 1,
-        justifyContent: "center",
-        alignSelf: "center",
-    },
-    svg: {
-        position: "absolute",
-        left: 0,
-        top: 0,
-    },
+  container: {
+    flex: 1,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  msgc: {
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  svg: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  },
 });
