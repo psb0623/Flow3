@@ -1,5 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import * as AxiosLogger from 'axios-logger';
+import {setGlobalConfig} from 'axios-logger';
 
 export const apiInstance = axios.create({
   baseURL: 'http://localhost:3000',
@@ -20,5 +21,5 @@ apiInstance.interceptors.response.use(
 
 if (true) {
   apiInstance.interceptors.response.use(AxiosLogger.responseLogger);
-  apiInstance.interceptors.response.use(AxiosLogger.requestLogger);
+  apiInstance.interceptors.request.use(AxiosLogger.requestLogger);
 }

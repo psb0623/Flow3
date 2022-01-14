@@ -2,12 +2,13 @@
 import * as React from 'react';
 import {SafeAreaView, Text, StyleSheet, Button} from 'react-native';
 import {BackButton} from '../../components/BackButton';
-import {useCallback, useRef} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 import {
   StageGameStackNavigationProp,
   StageGameStackRouteProp,
 } from '../stack/StageGameStack';
 import {Pattern} from './Pattern/Pattern';
+import {stageService} from '../../api';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {} & StageGameStackNavigationProp & StageGameStackRouteProp;
@@ -18,6 +19,12 @@ export const StageGameScene = ({navigation, route: {params}}: Props) => {
   const goNextGameStage = useCallback((gameStageNumber) => {
     navigation.navigate('StageGameScene', {gameStageNumber: gameStageNumber});
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const response = await stageService.getStage(gameStageNumber.toString());
+    })();
+  }, [gameStageNumber]);
 
   return (
     <SafeAreaView style={styles.container}>
