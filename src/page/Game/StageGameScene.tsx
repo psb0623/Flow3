@@ -31,7 +31,7 @@ export const StageGameScene = ({navigation, route: {params}}: Props) => {
       <Pattern
         message={'Hello'}
         onCheck={(res) => {
-          return true;
+          return false;
         }}
         rowCount={3}
         activeColor={'#8E91A8'}
