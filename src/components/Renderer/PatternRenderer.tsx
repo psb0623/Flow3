@@ -2,7 +2,6 @@ import React, {useCallback, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 
 import Animated, {
-  DerivedValue,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
@@ -12,7 +11,7 @@ import {PathRenderer} from './PathRenderer';
 import {SharedValue} from 'react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper';
 
 interface PropsType {
-  selectedIndexes: SharedValue<number[]>;
+  selectedIndexes: number[];
   rowCount: number;
   columnCount: number;
   patternMargin: number;
@@ -24,7 +23,7 @@ interface PropsType {
 }
 
 export const PatternRenderer = ({
-  selectedIndexes,
+  selectedIndexes: _selectedIndexes,
   rowCount,
   patternMargin,
   columnCount,
@@ -35,7 +34,7 @@ export const PatternRenderer = ({
   error,
 }: PropsType) => {
   const containerLayout = useSharedValue({width: 0, height: 0, min: 0});
-
+  const selectedIndexes = useSharedValue(_selectedIndexes);
   const onContainerLayout = ({
     nativeEvent: {
       layout: {x, y, width, height},
