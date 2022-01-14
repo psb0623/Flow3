@@ -61,7 +61,8 @@ export function Pattern(props: PropsType) {
   const containerLayout = useSharedValue({width: 0, height: 0, min: 0});
   const R = useDerivedValue(
     () =>
-      (containerLayout.value.min / props.rowCount - props.patternMargin * 2) /
+      (containerLayout.value.min / props.columnCount -
+        props.patternMargin * 2) /
       2,
   );
   const cvc = useAnimatedStyle(() => ({
@@ -97,7 +98,7 @@ export function Pattern(props: PropsType) {
       for (let j = 0; j < props.columnCount; j++) {
         points.push({
           x: layout.x + (layout.width / props.columnCount) * (j + 0.5),
-          y: layout.y + (layout.height / props.rowCount) * (i + 0.5),
+          y: layout.y + (layout.height / props.columnCount) * (i + 0.5),
         });
       }
     }
@@ -152,7 +153,7 @@ export function Pattern(props: PropsType) {
               R.value * R.value
             ) {
               selected.push(idx);
-              runOnJS(Vibration.vibrate)(50);
+              runOnJS(Vibration.vibrate)(10);
               runOnJS(fadeIn)();
               return false;
             }
@@ -174,7 +175,7 @@ export function Pattern(props: PropsType) {
             ) {
               if (selectedIndexes.value.indexOf(idx) < 0) {
                 selectedIndexes.value = [...selectedIndexes.value, idx];
-                runOnJS(Vibration.vibrate)(50);
+                runOnJS(Vibration.vibrate)(10);
               }
               return false;
             }
