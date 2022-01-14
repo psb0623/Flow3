@@ -5,6 +5,8 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import {stageService} from '../api';
+import {useEffect} from 'react';
 
 interface Props {
   title: string;
@@ -12,6 +14,10 @@ interface Props {
 }
 
 export const StageStartButton = ({title, onPressed}: Props) => {
+  useEffect(() => {
+    stageService.getStage('1');
+    console.log(1);
+  }, []);
   return <Button title={title} onPress={onPressed}></Button>;
 };
 
