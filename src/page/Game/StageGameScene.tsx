@@ -1,4 +1,3 @@
-// @flow
 import * as React from 'react';
 import {SafeAreaView, StyleSheet, Button} from 'react-native';
 import {BackButton} from '../../components/BackButton';
@@ -10,6 +9,7 @@ import {
 import {Pattern} from './Pattern/Pattern';
 import {stageService} from '../../api';
 import {Stage} from './Stage';
+import {PatternRenderer} from '../../components/PatternRenderer/PatternRenderer';
 
 type Props = StageGameStackNavigationProp &
   StageGameStackRouteProp<'StageGameScene'>;
@@ -57,7 +57,6 @@ export const StageGameScene = ({
         }}
       />
       <Pattern
-        message={'Hello'}
         onCheck={(res) => {
           return false;
         }}
