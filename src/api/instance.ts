@@ -20,5 +20,5 @@ apiInstance.interceptors.response.use(
 
 if (true) {
   apiInstance.interceptors.response.use(AxiosLogger.responseLogger);
-  apiInstance.interceptors.response.use(AxiosLogger.requestLogger);
+  apiInstance.interceptors.request.use(AxiosLogger.requestLogger);
 }

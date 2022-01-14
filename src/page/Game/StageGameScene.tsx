@@ -1,23 +1,51 @@
-// @flow
 import * as React from 'react';
-import {SafeAreaView, Text, StyleSheet, Button} from 'react-native';
+import {SafeAreaView, StyleSheet, Button} from 'react-native';
 import {BackButton} from '../../components/BackButton';
-import {useCallback, useRef} from 'react';
+import {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {
   StageGameStackNavigationProp,
   StageGameStackRouteProp,
 } from '../stack/StageGameStack';
 import {Pattern} from './Pattern/Pattern';
+import {stageService} from '../../api';
+import {Stage} from './Stage';
+import {PatternRenderer} from '../../components/PatternRenderer/PatternRenderer';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type Props = {} & StageGameStackNavigationProp & StageGameStackRouteProp;
+type Props = StageGameStackNavigationProp &
+  StageGameStackRouteProp<'StageGameScene'>;
 
-export const StageGameScene = ({navigation, route: {params}}: Props) => {
-  const gameStageNumber = params?.gameStageNumber as number;
+export const StageGameScene = ({
+  navigation,
+  route: {
+    params: {gameStageNumber, gameType},
+  },
+}: Props) => {
+  const [stage, setStage] = useState<Stage | null>(null);
 
   const goNextGameStage = useCallback((gameStageNumber) => {
-    navigation.navigate('StageGameScene', {gameStageNumber: gameStageNumber});
+    navigation.navigate('StageGameScene', {
+      gameStageNumber: gameStageNumber,
+      gameType: gameType,
+    });
   }, []);
+
+  useLayoutEffect(() => {
+    (async () => {
+      if (gameType == 'Three') {
+        const {data} = await stageService.getStage3Detail(
+          gameStageNumber.toString(),
+        );
+        setStage(data);
+      }
+
+      if (gameType == 'Four') {
+        const {data} = await stageService.getStage4Detail(
+          gameStageNumber.toString(),
+        );
+        setStage(data);
+      }
+    })();
+  }, [gameStageNumber, gameType]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -29,7 +57,6 @@ export const StageGameScene = ({navigation, route: {params}}: Props) => {
         }}
       />
       <Pattern
-        message={'Hello'}
         onCheck={(res) => {
           return false;
         }}

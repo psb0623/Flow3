@@ -4,10 +4,13 @@ import {
 } from '@react-navigation/stack';
 import {StageGame} from '../Game/StageGame';
 import {StageGameScene} from '../Game/StageGameScene';
+import {GameType} from '../Game/GameType';
+import {StageSelect} from '../Game/StageSelect';
 
 export type StageGameStackType = {
-  StageGame: undefined;
-  StageGameScene: {gameStageNumber: number};
+  StageSelect: undefined;
+  StageGame: {gameType: GameType};
+  StageGameScene: {gameStageNumber: number; gameType: GameType};
 };
 
 export type StageGameTypes = keyof StageGameStackType;
@@ -16,9 +19,9 @@ export type StageGameStackNavigationProp = {
   navigation: StackNavigationProp<StageGameStackType, StageGameTypes>;
 };
 
-export type StageGameStackRouteProp = Required<{
+export type StageGameStackRouteProp<T extends StageGameTypes> = Required<{
   route: Required<{
-    params: StageGameStackType[StageGameTypes];
+    params: StageGameStackType[T];
   }>;
 }>;
 
@@ -27,6 +30,7 @@ const _StageGameStack = createStackNavigator<StageGameStackType>();
 export const StageGameStack = () => {
   return (
     <_StageGameStack.Navigator screenOptions={{headerShown: false}}>
+      <_StageGameStack.Screen name={'StageSelect'} component={StageSelect} />
       <_StageGameStack.Screen
         name={'StageGame'}
         component={StageGame}></_StageGameStack.Screen>

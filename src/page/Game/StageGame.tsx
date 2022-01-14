@@ -1,55 +1,71 @@
 import * as React from 'react';
-import {Button, FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
-import {useCallback, useLayoutEffect, useMemo, useRef} from 'react';
-import {StageStartButton} from '../../components/StageStartButton';
-import {FlatGrid} from 'react-native-super-grid';
-import {AppStackNavigationProp} from '../stack/AppStack';
-import {BackButton} from '../../components/BackButton';
-import {
-  createStackNavigator,
-  StackNavigationProp,
-} from '@react-navigation/stack';
+import {View} from 'react-native';
+import {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {StageGameScene} from './StageGameScene';
 import {
   StageGameStackNavigationProp,
   StageGameStackRouteProp,
 } from '../stack/StageGameStack';
+import {Stage} from './Stage';
+import {stageService} from '../../api';
+import {FlatGrid} from 'react-native-super-grid';
+import {StageStartButton} from '../../components/StageStartButton';
+import {BackButton} from '../../components/BackButton';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type Props = {};
-
-const Stack = createStackNavigator();
+type Props = StageGameStackRouteProp<'StageGame'> &
+  StageGameStackNavigationProp;
 
 export const StageGame = ({
   navigation,
-}: Props & StageGameStackRouteProp & StageGameStackNavigationProp) => {
-  const stage = useRef(new Array(100).fill(null));
+  route: {
+    params: {gameType},
+  },
+}: Props) => {
+  const [stage, setStage] = useState<Stage[] | null>(null);
 
   const goStageGameScene = useCallback((gameStageNumber: number) => {
-    navigation.push('StageGameScene', {gameStageNumber});
+    navigation.push('StageGameScene', {
+      gameStageNumber,
+      gameType,
+    });
   }, []);
+
+  useLayoutEffect(() => {
+    if (gameType === 'Three') {
+      (async () => {
+        const {data} = await stageService.getStage3();
+        setStage(data);
+      })();
+    }
+
+    if (gameType === 'Four') {
+      (async () => {
+        const {data} = await stageService.getStage4();
+        setStage(data);
+      })();
+    }
+  }, [gameType]);
 
   return (
     <View>
-      <FlatGrid
-        data={stage.current}
-        renderItem={({index}) => (
-          <StageStartButton
-            key={index}
-            title={index.toString()}
-            onPressed={() => {
-              goStageGameScene(index);
-            }}
-          />
-        )}
-        keyExtractor={() => {
-          return Math.random().toString();
-        }}
-      />
+      <BackButton navigation={navigation} />
+      {stage && (
+        <FlatGrid
+          data={stage}
+          renderItem={({index}) => (
+            <StageStartButton
+              key={index}
+              title={index.toString()}
+              onPressed={() => {
+                goStageGameScene(index);
+              }}
+            />
+          )}
+          keyExtractor={() => {
+            return Math.random().toString();
+          }}
+        />
+      )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  gameContainer: {},
-});
