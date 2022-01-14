@@ -21,7 +21,6 @@ export const StageGameScene = ({navigation, route : { params }}: Props) => {
         <SafeAreaView style={styles.container}>
             <BackButton navigation={navigation}></BackButton>
             <Button title={"next"} onPress={() => {goNextGameStage(gameStageNumber + 1)}}></Button>
-            <Text>{gameStageNumber}</Text>
             <Pattern message={"Hello"} onCheck={(res) => {return true} } rowCount={3} activeColor={"#8E91A8"} columnCount={3} errorColor={"#D93609"} patternMargin={25} inactiveColor={"#8E91A8"}></Pattern>
         </SafeAreaView>
     );
