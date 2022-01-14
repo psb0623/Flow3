@@ -1,42 +1,40 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 
 import Animated, {
-  useAnimatedProps,
+  DerivedValue,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
 } from 'react-native-reanimated';
-import Svg, {Path} from 'react-native-svg';
 import {Point} from '../../page/Game/Pattern/Point';
-
-const AnimatedPath = Animated.createAnimatedComponent(Path);
+import {PathRenderer} from './PathRenderer';
+import {SharedValue} from 'react-native-gesture-handler/lib/typescript/handlers/gestures/reanimatedWrapper';
 
 interface PropsType {
-  selectedIndexes: number[];
+  selectedIndexes: SharedValue<number[]>;
   rowCount: number;
   columnCount: number;
   patternMargin: number;
   inactiveColor: string;
+  activeColor: string;
+  errorColor: string;
+  backgroundColor: string;
+  error: boolean;
 }
 
 export const PatternRenderer = ({
-  selectedIndexes: _selectedIndexes,
+  selectedIndexes,
   rowCount,
   patternMargin,
   columnCount,
+  backgroundColor,
   inactiveColor,
+  activeColor,
+  errorColor,
+  error,
 }: PropsType) => {
-  const selectedIndexes = useSharedValue<number[]>([]);
   const containerLayout = useSharedValue({width: 0, height: 0, min: 0});
-  const patternPoints = useSharedValue<Point[] | null>(null);
-  const R = useDerivedValue(
-    () => (containerLayout.value.min / rowCount - patternMargin * 2) / 2,
-  );
-
-  useEffect(() => {
-    selectedIndexes.value = _selectedIndexes;
-  }, [_selectedIndexes]);
 
   const onContainerLayout = ({
     nativeEvent: {
@@ -49,31 +47,26 @@ export const PatternRenderer = ({
       min: Math.min(width, height),
     });
 
-  const onPatternLayout = ({nativeEvent: {layout}}) => {
-    const points: Array<Point> = [];
-    for (let i = 0; i < rowCount; i++) {
-      for (let j = 0; j < columnCount; j++) {
-        points.push({
-          x: layout.x + (layout.width / columnCount) * (j + 0.5),
-          y: layout.y + (layout.height / columnCount) * (i + 0.5),
-        });
-      }
-    }
-    patternPoints.value = points;
-  };
+  const R = useDerivedValue(
+    () => (containerLayout.value.min / rowCount - patternMargin * 2) / 2,
+  );
+  const patternPoints = useSharedValue<Point[] | null>(null);
 
-  const animatedProps = useAnimatedProps(() => {
-    let d = '';
-    selectedIndexes.value.forEach((idx) => {
-      if (patternPoints.value != null) {
-        d += !d ? ' M' : ' L';
-        d += ` ${patternPoints?.value[idx].x},${patternPoints.value[idx].y}`;
+  const onLayout = useCallback(
+    ({nativeEvent: {layout}}) => {
+      const points: Array<Point> = [];
+      for (let i = 0; i < rowCount; i++) {
+        for (let j = 0; j < columnCount; j++) {
+          points.push({
+            x: layout.x + (layout.width / columnCount) * (j + 0.5),
+            y: layout.y + (layout.height / columnCount) * (i + 0.5),
+          });
+        }
       }
-    });
-    if (!d) d = 'M-1,-1';
-    console.log(d);
-    return {d};
-  });
+      patternPoints.value = points;
+    },
+    [patternPoints],
+  );
 
   const cvc = useAnimatedStyle(() => ({
     flexDirection: 'row',
@@ -90,13 +83,20 @@ export const PatternRenderer = ({
 
   return (
     <Animated.View style={styles.container} onLayout={onContainerLayout}>
-      <Animated.View style={cvc} onLayout={onPatternLayout}>
+      <Animated.View style={cvc} onLayout={onLayout}>
         {Array(rowCount * columnCount)
           .fill(0)
           .map((_, idx) => {
             const patternColor = useDerivedValue(() => {
-              return inactiveColor;
-            });
+              if (selectedIndexes.value.findIndex((v) => v === idx) < 0) {
+                return inactiveColor;
+              } else if (error) {
+                return errorColor;
+              } else {
+                return activeColor;
+              }
+            }).value;
+
             const outer = useAnimatedStyle(() => {
               return {
                 borderWidth: 0,
@@ -104,7 +104,7 @@ export const PatternRenderer = ({
                 height: 2 * R.value,
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderColor: patternColor.value,
+                borderColor: patternColor,
                 borderRadius: 2 * R.value,
                 margin: patternMargin,
               };
@@ -114,7 +114,7 @@ export const PatternRenderer = ({
                 width: R.value * 0.4,
                 height: R.value * 0.4,
                 borderRadius: R.value * 0.4,
-                backgroundColor: patternColor.value,
+                backgroundColor: backgroundColor,
               };
             });
             return (
@@ -124,21 +124,21 @@ export const PatternRenderer = ({
             );
           })}
       </Animated.View>
-      <Svg style={styles.svg} width="100%" height="100%">
-        <AnimatedPath
-          fill="none"
-          strokeWidth={3}
-          animatedProps={animatedProps}
-          stroke={inactiveColor}
-        />
-      </Svg>
+      <PathRenderer
+        patternPoints={patternPoints}
+        selectedIndexes={selectedIndexes}
+      />
     </Animated.View>
   );
 };
 
 PatternRenderer.defaultProps = {
   patternMargin: 25,
+  error: false,
   inactiveColor: '#8E91A8',
+  activeColor: '#5FA8FC',
+  errorColor: '#D93609',
+  backgroundColor: '#8E91A8',
 };
 
 const styles = StyleSheet.create({
@@ -151,10 +151,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignSelf: 'center',
-  },
-  svg: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
   },
 });
