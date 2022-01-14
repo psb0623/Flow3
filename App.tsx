@@ -1,26 +1,20 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from "react";
+import { AppStack } from "./src/page/stack/AppStack";
+import {useEffect, useState} from "react";
+import {Splash} from "./src/page/Splash";
+import { View } from "react-native";
 
 export default function App() {
-  return (
-    <>
-      <StatusBar hidden />
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-        <Text>Naver</Text>
-        <Text>진성호</Text>
-        <Text>진성호</Text>
-        <Text>진성호</Text>
-      </View>
-    </>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const [load, setLoad] = useState<Boolean>(false)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoad(true)
+    }, 1000)
+  }, [setLoad])
+
+  return (
+        !load ? <Splash/>: <AppStack/>
+  );
+};
