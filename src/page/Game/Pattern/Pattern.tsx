@@ -6,11 +6,9 @@ import {
 } from 'react-native-gesture-handler';
 import Animated, {
   cancelAnimation,
-  Easing,
   EasingNode,
   runOnJS,
   runOnUI,
-  sqrt,
   useAnimatedGestureHandler,
   useAnimatedProps,
   useAnimatedStyle,
@@ -191,6 +189,35 @@ export function Pattern(props: PropsType) {
               R.value * R.value
             ) {
               if (selectedIndexes.value.indexOf(idx) < 0) {
+                let p = selectedIndexes.value[selectedIndexes.value.length - 1];
+                let c = idx;
+                let px = p % props.columnCount;
+                let py = (p / props.rowCount) >> 0;
+                let cx = c % props.columnCount;
+                let cy = (c / props.rowCount) >> 0;
+                //console.log(`${py}, ${px} -> ${cy}, ${cx}`);
+
+                for (let i = Math.min(py, cy); i <= Math.max(py, cy); i++) {
+                  for (let j = Math.min(px, cx); j <= Math.max(px, cx); j++) {
+                    if (i == py && j == px) continue;
+                    if (i == cy && j == cx) continue;
+                    if ((j - px) * (cy - i) == (i - py) * (cx - j)) {
+                      if (
+                        selectedIndexes.value.indexOf(i * props.rowCount + j) <
+                        0
+                      ) {
+                        selectedIndexes.value = [
+                          ...selectedIndexes.value,
+                          i * props.rowCount + j,
+                        ];
+                        selectAnim[i * props.rowCount + j].value =
+                          withSpring(2);
+                      }
+                      //console.log(`inter : ${i}, ${j}`);
+                    }
+                  }
+                }
+
                 selectedIndexes.value = [...selectedIndexes.value, idx];
                 selectAnim[idx].value = withSpring(2);
                 cancelAnimation(testAnim);
