@@ -18,6 +18,7 @@ const Tab = createBottomTabNavigator<MainTabType>();
 type Props = {} & AppStackNavigationProp;
 
 export const Main = ({navigation}: Props) => {
+
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({

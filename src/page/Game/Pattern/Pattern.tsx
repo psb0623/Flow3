@@ -10,11 +10,13 @@ import Animated, {
   EasingNode,
   runOnJS,
   runOnUI,
+  sqrt,
   useAnimatedGestureHandler,
   useAnimatedProps,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
+  withDelay,
   withSpring,
 } from 'react-native-reanimated';
 import Svg, {Path} from 'react-native-svg';
@@ -37,6 +39,12 @@ interface PropsType {
 export function Pattern(props: PropsType) {
   const [isError, setIsError] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  const selectAnim = Array(props.rowCount * props.columnCount)
+    .fill(0)
+    .map((_, idx) => useSharedValue<number>(1));
+
+  const testAnim = useSharedValue<number>(1);
 
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
@@ -107,11 +115,20 @@ export function Pattern(props: PropsType) {
     if (props.onCheck) {
       canTouch.value = false;
       if (!props.onCheck(res)) {
+        selectAnim.forEach((v, idx) => {
+          v.value = withDelay(
+            selectedIndexes.value.findIndex((v) => v === idx) * 100,
+            withSpring(1),
+          );
+        });
+
         setIsError(true);
         fadeOut();
+
         const closeError = () => setIsError(false);
         runOnUI(() => {
           cancelAnimation(msgX);
+
           //修复iOS上原地spring不动的问题。
           msgX.value = withSpring(
             msgX.value === 0 ? 0.1 : 0,
@@ -152,7 +169,8 @@ export function Pattern(props: PropsType) {
               R.value * R.value
             ) {
               selected.push(idx);
-              runOnJS(Vibration.vibrate)(50);
+              selectAnim[idx].value = withSpring(2);
+              runOnJS(Vibration.vibrate)(10);
               runOnJS(fadeIn)();
               return false;
             }
@@ -174,7 +192,11 @@ export function Pattern(props: PropsType) {
             ) {
               if (selectedIndexes.value.indexOf(idx) < 0) {
                 selectedIndexes.value = [...selectedIndexes.value, idx];
-                runOnJS(Vibration.vibrate)(50);
+                selectAnim[idx].value = withSpring(2);
+                cancelAnimation(testAnim);
+                testAnim.value = 1;
+                testAnim.value = withSpring(0);
+                runOnJS(Vibration.vibrate)(10);
               }
               return false;
             }
@@ -186,16 +208,50 @@ export function Pattern(props: PropsType) {
       onEnd: (evt) => {
         if (!canTouch.value) return;
         endPoint.value = null;
+        //testAnim.value = 0;
         if (selectedIndexes.value.length > 0)
           runOnJS(onEndJS)(selectedIndexes.value.join(''));
       },
     });
   const animatedProps = useAnimatedProps(() => {
     let d = '';
-    selectedIndexes.value.forEach((idx) => {
+    selectedIndexes.value.forEach((pos, idx) => {
       if (patternPoints.value != null) {
-        d += !d ? ' M' : ' L';
-        d += ` ${patternPoints?.value[idx].x},${patternPoints.value[idx].y}`;
+        if (!d) {
+          d += ' M';
+          d += ` ${patternPoints?.value[pos].x},${patternPoints.value[pos].y}`;
+        } else if (idx == selectedIndexes.value.length - 1) {
+          let mx =
+            (patternPoints?.value[pos].x +
+              patternPoints?.value[selectedIndexes.value[idx - 1]].x) /
+            2;
+          let my =
+            (patternPoints?.value[pos].y +
+              patternPoints?.value[selectedIndexes.value[idx - 1]].y) /
+            2;
+          let dx =
+            (patternPoints?.value[pos].x -
+              patternPoints?.value[selectedIndexes.value[idx - 1]].x) /
+            2;
+          let dy =
+            (patternPoints?.value[pos].y -
+              patternPoints?.value[selectedIndexes.value[idx - 1]].y) /
+            2;
+
+          let ndx = dx / Math.sqrt(dx * dx + dy * dy);
+          let ndy = dy / Math.sqrt(dx * dx + dy * dy);
+
+          let vx = mx - 20 * ndy * testAnim.value;
+          let vy = my + 20 * ndx * testAnim.value;
+
+          d += ' Q';
+          d += ` ${vx},${vy}, ${patternPoints?.value[pos].x},${patternPoints.value[pos].y}`;
+        } else {
+          d += ' L';
+          d += ` ${patternPoints?.value[pos].x},${patternPoints.value[pos].y}`;
+        }
+        //d += !d ? ' M' : ' L';
+        //d += ` ${patternPoints?.value[idx].x},${patternPoints.value[idx].y}`;
       }
     });
     if (d && endPoint.value) d += ` L${endPoint.value.x},${endPoint.value.y}`;
@@ -240,8 +296,8 @@ export function Pattern(props: PropsType) {
                   });
                   const inner = useAnimatedStyle(() => {
                     return {
-                      width: R.value * 0.4,
-                      height: R.value * 0.4,
+                      width: R.value * 0.4 * selectAnim[idx].value,
+                      height: R.value * 0.4 * selectAnim[idx].value,
                       borderRadius: R.value * 0.4,
                       backgroundColor: patternColor.value,
                     };

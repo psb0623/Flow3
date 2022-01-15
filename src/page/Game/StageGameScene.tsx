@@ -59,7 +59,7 @@ export const StageGameScene = ({
         onCheck={(res) => {
           return false;
         }}
-        rowCount={3}
+        rowCount={4}
         activeColor={'#8E91A8'}
         columnCount={3}
         errorColor={'#D93609'}
