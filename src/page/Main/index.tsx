@@ -62,12 +62,28 @@ export const Main = ({navigation}: Props) => {
             );
           }
         },
-        tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
+        headerShown: false,
       })}>
-      <Tab.Screen name="StageGameStack" component={StageGameStack} />
-      <Tab.Screen name={'ChallengeGame'} component={ChallengeGame}></Tab.Screen>
-      <Tab.Screen name={'Achieve'} component={Achieve}></Tab.Screen>
+      <Tab.Screen
+        name={'StageGameStack'}
+        component={StageGameStack}
+        options={{
+          title: '일반 모드',
+        }}
+      />
+      <Tab.Screen
+        name={'ChallengeGame'}
+        component={ChallengeGame}
+        options={{
+          title: '도전 모드',
+        }}></Tab.Screen>
+      <Tab.Screen
+        name={'Achieve'}
+        component={Achieve}
+        options={{
+          title: '업적',
+        }}></Tab.Screen>
     </Tab.Navigator>
   );
 };
