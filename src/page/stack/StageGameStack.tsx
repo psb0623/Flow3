@@ -29,14 +29,34 @@ const _StageGameStack = createStackNavigator<StageGameStackType>();
 
 export const StageGameStack = () => {
   return (
-    <_StageGameStack.Navigator screenOptions={{headerShown: false}}>
-      <_StageGameStack.Screen name={'StageSelect'} component={StageSelect} />
+    <_StageGameStack.Navigator>
+      <_StageGameStack.Screen
+        name={'StageSelect'}
+        component={StageSelect}
+        options={{
+          title: '일반 모드',
+        }}
+      />
       <_StageGameStack.Screen
         name={'StageGame'}
-        component={StageGame}></_StageGameStack.Screen>
+        component={StageGame}
+        options={({route}) => {
+          if (route.params.gameType === 'Three') {
+            return {
+              title: '3 X 3',
+            };
+          }
+          return {
+            title: '4 X 4',
+          };
+        }}
+      />
       <_StageGameStack.Screen
         name={'StageGameScene'}
         component={StageGameScene}
+        options={{
+          title: '업적',
+        }}
       />
     </_StageGameStack.Navigator>
   );

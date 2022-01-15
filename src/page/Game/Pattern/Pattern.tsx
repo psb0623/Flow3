@@ -33,7 +33,7 @@ interface PropsType {
   activeColor: string;
   inactiveColor: string;
   patternMargin: number;
-  onCheck: (res: string) => boolean;
+  onCheck?: (res: string) => boolean;
 }
 
 export function Pattern(props: PropsType) {
@@ -333,6 +333,7 @@ Pattern.defaultProps = {
   inactiveColor: '#8E91A8',
   activeColor: '#5FA8FC',
   errorColor: '#D93609',
+  onCheck: () => false,
 };
 
 const styles = StyleSheet.create({
