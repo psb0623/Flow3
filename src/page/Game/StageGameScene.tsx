@@ -9,6 +9,7 @@ import {
 import {Pattern} from './Pattern/Pattern';
 import {stageService} from '../../api';
 import {Stage} from './Stage';
+import {PatternRenderer} from '../../components/Renderer/PatternRenderer';
 
 type Props = StageGameStackNavigationProp &
   StageGameStackRouteProp<'StageGameScene'>;
