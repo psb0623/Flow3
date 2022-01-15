@@ -32,10 +32,10 @@ export const AppStack = ({}: Props) => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen
-          name={'BeforeStart'}
-          component={BeforeStart}></Stack.Screen>
         <Stack.Screen name={'Main'} component={Main} />
+        {/*<Stack.Screen*/}
+        {/*  name={'BeforeStart'}*/}
+        {/*  component={BeforeStart}></Stack.Screen>*/}
       </Stack.Navigator>
     </NavigationContainer>
   );
