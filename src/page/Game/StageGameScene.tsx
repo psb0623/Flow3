@@ -47,6 +47,14 @@ export const StageGameScene = ({
     })();
   }, [gameStageNumber, gameType]);
 
+  let answer = stage?.answer;
+  let selectedIndices: number[] = [];
+  if (answer) {
+    for (let i = 0; i < answer?.length; i++) {
+      selectedIndices.push(answer.charCodeAt(i) - '0'.charCodeAt(0));
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <BackButton navigation={navigation} />
@@ -56,11 +64,16 @@ export const StageGameScene = ({
           goNextGameStage(gameStageNumber + 1);
         }}
       />
+      <PatternRenderer
+        selectedIndexes={selectedIndices}
+        columnCount={3}
+        rowCount={3}
+      />
       <Pattern
         onCheck={(res) => {
           return false;
         }}
-        rowCount={4}
+        rowCount={3}
         activeColor={'#8E91A8'}
         columnCount={3}
         errorColor={'#D93609'}
