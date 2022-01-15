@@ -15,6 +15,7 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
+  withDelay,
   withSpring,
 } from 'react-native-reanimated';
 import Svg, {Path} from 'react-native-svg';
@@ -37,6 +38,10 @@ interface PropsType {
 export function Pattern(props: PropsType) {
   const [isError, setIsError] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  const selectAnim = Array(props.rowCount * props.columnCount)
+    .fill(0)
+    .map((_, idx) => useSharedValue<number>(1));
 
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
@@ -61,8 +66,7 @@ export function Pattern(props: PropsType) {
   const containerLayout = useSharedValue({width: 0, height: 0, min: 0});
   const R = useDerivedValue(
     () =>
-      (containerLayout.value.min / props.columnCount -
-        props.patternMargin * 2) /
+      (containerLayout.value.min / props.rowCount - props.patternMargin * 2) /
       2,
   );
   const cvc = useAnimatedStyle(() => ({
@@ -98,7 +102,7 @@ export function Pattern(props: PropsType) {
       for (let j = 0; j < props.columnCount; j++) {
         points.push({
           x: layout.x + (layout.width / props.columnCount) * (j + 0.5),
-          y: layout.y + (layout.height / props.columnCount) * (i + 0.5),
+          y: layout.y + (layout.height / props.rowCount) * (i + 0.5),
         });
       }
     }
@@ -108,11 +112,20 @@ export function Pattern(props: PropsType) {
     if (props.onCheck) {
       canTouch.value = false;
       if (!props.onCheck(res)) {
+        selectAnim.forEach((v, idx) => {
+          v.value = withDelay(
+            selectedIndexes.value.findIndex((v) => v === idx) * 100,
+            withSpring(1),
+          );
+        });
+
         setIsError(true);
         fadeOut();
+
         const closeError = () => setIsError(false);
         runOnUI(() => {
           cancelAnimation(msgX);
+
           //修复iOS上原地spring不动的问题。
           msgX.value = withSpring(
             msgX.value === 0 ? 0.1 : 0,
@@ -153,6 +166,7 @@ export function Pattern(props: PropsType) {
               R.value * R.value
             ) {
               selected.push(idx);
+              selectAnim[idx].value = withSpring(2);
               runOnJS(Vibration.vibrate)(10);
               runOnJS(fadeIn)();
               return false;
@@ -175,6 +189,7 @@ export function Pattern(props: PropsType) {
             ) {
               if (selectedIndexes.value.indexOf(idx) < 0) {
                 selectedIndexes.value = [...selectedIndexes.value, idx];
+                selectAnim[idx].value = withSpring(2);
                 runOnJS(Vibration.vibrate)(10);
               }
               return false;
@@ -241,8 +256,8 @@ export function Pattern(props: PropsType) {
                   });
                   const inner = useAnimatedStyle(() => {
                     return {
-                      width: R.value * 0.4,
-                      height: R.value * 0.4,
+                      width: R.value * 0.4 * selectAnim[idx].value,
+                      height: R.value * 0.4 * selectAnim[idx].value,
                       borderRadius: R.value * 0.4,
                       backgroundColor: patternColor.value,
                     };
