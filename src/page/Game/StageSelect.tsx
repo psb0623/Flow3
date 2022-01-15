@@ -3,7 +3,6 @@ import * as React from 'react';
 import {Button, View, Text, StyleSheet} from 'react-native';
 import {useCallback, useEffect, useState} from 'react';
 import {StageGameStackNavigationProp} from '../stack/StageGameStack';
-import {PatternRenderer} from '../../components/Renderer/PatternRenderer';
 import {BasicButton} from '../../components/BasicButton';
 import ModalSelector from 'react-native-modal-selector';
 import {Pattern} from './Pattern/Pattern';
@@ -35,19 +34,20 @@ export const StageSelect = ({navigation}: Props) => {
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <View style={styles.title}>
-          <View>
-            <Text style={styles.titleText}>Pattern</Text>
-            <View style={styles.patternContainer}>
-              <Pattern></Pattern>
-            </View>
+          <Text style={styles.titleText}>Pattern</Text>
+          <View style={styles.patternContainer}>
+            <Pattern></Pattern>
           </View>
         </View>
       </View>
-      <BasicButton
-        text={'게임 시작하기'}
-        onPressed={() => {
-          setModalVisible(true);
-        }}></BasicButton>
+      <View style={styles.buttonContainer}>
+        <BasicButton
+          text={'게임 시작하기'}
+          onPressed={() => {
+            setModalVisible(true);
+          }}
+        />
+      </View>
       <ModalSelector
         selectStyle={{
           display: 'none',
@@ -109,5 +109,9 @@ const styles = StyleSheet.create({
   patternContainer: {
     width: 200,
     height: 200,
+  },
+  buttonContainer: {
+    height: 50,
+    width: '100%',
   },
 });

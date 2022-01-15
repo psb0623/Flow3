@@ -34,6 +34,7 @@ export const StageGame = ({
     if (gameType === 'Three') {
       (async () => {
         const {data} = await stageService.getStage3();
+        console.log(data);
         setStage(data);
       })();
     }
@@ -41,9 +42,14 @@ export const StageGame = ({
     if (gameType === 'Four') {
       (async () => {
         const {data} = await stageService.getStage4();
+        console.log(data);
         setStage(data);
       })();
     }
+
+    return () => {
+      setStage(null);
+    };
   }, [gameType]);
 
   return (
