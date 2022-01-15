@@ -1,8 +1,11 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import * as AxiosLogger from 'axios-logger';
 
+const SERVER_URI = 'http://192.249.18.180';
+const TEST_SERVER_URI = 'http://localhost:3000';
+
 export const apiInstance = axios.create({
-  baseURL: 'http://192.249.18.180',
+  baseURL: TEST_SERVER_URI,
 });
 
 apiInstance.interceptors.request.use((config: AxiosRequestConfig) => {
