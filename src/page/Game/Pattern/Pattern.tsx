@@ -254,7 +254,7 @@ export function Pattern(props: PropsType) {
         //d += ` ${patternPoints?.value[idx].x},${patternPoints.value[idx].y}`;
       }
     });
-    if (d && endPoint.value) d += ` T ${endPoint.value.x},${endPoint.value.y}`;
+    if (d && endPoint.value) d += ` L ${endPoint.value.x},${endPoint.value.y}`;
     if (!d) d = 'M-1,-1';
     return {d};
   });
