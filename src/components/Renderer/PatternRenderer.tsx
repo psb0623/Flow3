@@ -114,9 +114,9 @@ export const PatternRenderer = ({
             });
             const inner = useAnimatedStyle(() => {
               return {
-                width: R.value * 0.4,
-                height: R.value * 0.4,
-                borderRadius: R.value * 0.4,
+                width: R.value * 1,
+                height: R.value * 1,
+                borderRadius: R.value * 1,
                 backgroundColor: backgroundColor,
               };
             });

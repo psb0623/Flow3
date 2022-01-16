@@ -10,7 +10,6 @@ import {Stage} from './Stage';
 import {stageService} from '../../api';
 import {FlatGrid} from 'react-native-super-grid';
 import {StageStartButton} from '../../components/StageStartButton';
-import {BackButton} from '../../components/BackButton';
 
 type Props = StageGameStackRouteProp<'StageGame'> &
   StageGameStackNavigationProp;
@@ -18,7 +17,7 @@ type Props = StageGameStackRouteProp<'StageGame'> &
 export const StageGame = ({
   navigation,
   route: {
-    params: {gameType},
+    params: {gameType, beforeGameStageNumber},
   },
 }: Props) => {
   const [stage, setStage] = useState<Stage[] | null>(null);
@@ -31,10 +30,20 @@ export const StageGame = ({
   }, []);
 
   useLayoutEffect(() => {
+    console.log(stage?.length, beforeGameStageNumber);
+    if (stage != null && beforeGameStageNumber != undefined) {
+      if (stage.length <= beforeGameStageNumber) {
+        navigation.push('StageGameSuccess', {
+          gameType: gameType,
+        });
+      }
+    }
+  }, [stage, beforeGameStageNumber]);
+
+  useLayoutEffect(() => {
     if (gameType === 'Three') {
       (async () => {
         const {data} = await stageService.getStage3();
-        console.log(data[0]);
         setStage(data);
       })();
     }
@@ -42,7 +51,6 @@ export const StageGame = ({
     if (gameType === 'Four') {
       (async () => {
         const {data} = await stageService.getStage4();
-        console.log(data);
         setStage(data);
       })();
     }
