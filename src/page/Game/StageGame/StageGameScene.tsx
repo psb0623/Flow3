@@ -1,15 +1,13 @@
 import * as React from 'react';
-import {SafeAreaView, StyleSheet, Button, View} from 'react-native';
-import {BackButton} from '../../components/BackButton';
 import {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {
   StageGameStackNavigationProp,
   StageGameStackRouteProp,
-} from '../stack/StageGameStack';
-import {normalize, Pattern} from './Pattern/Pattern';
-import {stageService} from '../../api';
+} from '../../stack/StageGameStack';
+import {stageService} from '../../../api';
 import {Stage} from './Stage';
-import {PatternRenderer} from '../../components/Renderer/PatternRenderer';
+import {PatternModule} from '../PatternModule/PatternModule';
+import {normalize} from '../Pattern/Pattern';
 
 type Props = StageGameStackNavigationProp &
   StageGameStackRouteProp<'StageGameScene'>;
@@ -31,16 +29,6 @@ export const StageGameScene = ({
       gameType: gameType,
     });
   }, []);
-
-  const onCheck = useCallback(
-    (res: string) => {
-      if (normalize(selectedIndices, 3, 3) === res) {
-        return true;
-      }
-      return false;
-    },
-    [selectedIndices],
-  );
 
   useLayoutEffect(() => {
     (async () => {
@@ -87,57 +75,13 @@ export const StageGameScene = ({
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      {selectedIndices && (
-        <View style={styles.patternRendererContainer}>
-          <View style={styles.patternRendererLayout}>
-            <PatternRenderer
-              selectedIndexes={selectedIndices}
-              columnCount={3}
-              rowCount={3}
-            />
-          </View>
-        </View>
-      )}
-      <View style={styles.patternLayout}>
-        <Pattern
-          onSuccess={() => {
-            goNextGameStage(gameStageNumber + 1);
-          }}
-          onCheck={onCheck}
-          rowCount={3}
-          activeColor={'#8E91A8'}
-          columnCount={3}
-          errorColor={'#D93609'}
-          patternMargin={25}
-          inactiveColor={'#8E91A8'}
-        />
-      </View>
-    </SafeAreaView>
+    selectedIndices && (
+      <PatternModule
+        answerIndices={selectedIndices}
+        onSuccess={() => {
+          goNextGameStage(gameStageNumber + 1);
+        }}
+      />
+    )
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  patternRendererContainer: {
-    width: '100%',
-    height: '30%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  patternRendererLayout: {
-    width: '100%',
-    height: '100%',
-  },
-  patternLayout: {
-    width: '100%',
-    height: '70%',
-  },
-});

@@ -5,11 +5,11 @@ import {StageGameScene} from './StageGameScene';
 import {
   StageGameStackNavigationProp,
   StageGameStackRouteProp,
-} from '../stack/StageGameStack';
+} from '../../stack/StageGameStack';
 import {Stage} from './Stage';
-import {stageService} from '../../api';
+import {stageService} from '../../../api';
 import {FlatGrid} from 'react-native-super-grid';
-import {StageStartButton} from '../../components/StageStartButton';
+import {StageStartButton} from '../../../components/StageStartButton';
 
 type Props = StageGameStackRouteProp<'StageGame'> &
   StageGameStackNavigationProp;
@@ -21,7 +21,6 @@ export const StageGame = ({
   },
 }: Props) => {
   const [stage, setStage] = useState<Stage[] | null>(null);
-
   const goStageGameScene = useCallback((gameStageNumber: number) => {
     navigation.push('StageGameScene', {
       gameStageNumber,

@@ -2,11 +2,11 @@ import {
   createStackNavigator,
   StackNavigationProp,
 } from '@react-navigation/stack';
-import {StageGame} from '../Game/StageGame';
-import {StageGameScene} from '../Game/StageGameScene';
-import {GameType} from '../Game/GameType';
-import {StageSelect} from '../Game/StageSelect';
-import {StageGameSuccess} from '../Game/StageGameSucess';
+import {StageGame} from '../Game/StageGame/StageGame';
+import {StageGameScene} from '../Game/StageGame/StageGameScene';
+import {GameType} from '../Game/StageGame/GameType';
+import {StageSelect} from '../Game/StageGame/StageSelect';
+import {StageGameSuccess} from '../Game/StageGame/StageGameSucess';
 
 export type StageGameStackType = {
   StageSelect: undefined;

@@ -1,5 +1,5 @@
 import {Axios, AxiosInstance, AxiosResponse} from 'axios';
-import {Stage} from '../../page/Game/Stage';
+import {Stage} from '../../page/Game/StageGame/Stage';
 
 export class StageService {
   constructor(private request: AxiosInstance) {}
