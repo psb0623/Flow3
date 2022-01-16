@@ -2,17 +2,24 @@
 import * as React from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import {PatternRenderer} from '../../../components/Renderer/PatternRenderer';
-import {Pattern} from '../Pattern/Pattern';
-import {useCallback} from 'react';
+import {normalize, Pattern} from '../Pattern/Pattern';
+import {FC, useCallback} from 'react';
 
 type Props = {
   answerIndices: Array<number>;
   onSuccess: () => void;
+  row: number;
+  column: number;
 };
-export const PatternModule = ({answerIndices, onSuccess}: Props) => {
+export const PatternModule = ({
+  answerIndices,
+  onSuccess,
+  row,
+  column,
+}: Props) => {
   const onCheck = useCallback(
     (res: string) => {
-      if (answerIndices.join('') === res) {
+      if (normalize(answerIndices, 3, 3) === res) {
         return true;
       }
       return false;
@@ -45,6 +52,11 @@ export const PatternModule = ({answerIndices, onSuccess}: Props) => {
       </View>
     </SafeAreaView>
   );
+};
+
+PatternModule.defaultProps = {
+  column: 3,
+  row: 3,
 };
 
 const styles = StyleSheet.create({

@@ -1,16 +1,13 @@
 import * as React from 'react';
-import {SafeAreaView, StyleSheet, Button, View} from 'react-native';
-import {BackButton} from '../../../components/BackButton';
 import {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {
   StageGameStackNavigationProp,
   StageGameStackRouteProp,
 } from '../../stack/StageGameStack';
-import {Pattern} from '../Pattern/Pattern';
 import {stageService} from '../../../api';
 import {Stage} from './Stage';
-import {PatternRenderer} from '../../../components/Renderer/PatternRenderer';
 import {PatternModule} from '../PatternModule/PatternModule';
+import {normalize} from '../Pattern/Pattern';
 
 type Props = StageGameStackNavigationProp &
   StageGameStackRouteProp<'StageGameScene'>;
@@ -32,16 +29,6 @@ export const StageGameScene = ({
       gameType: gameType,
     });
   }, []);
-
-  const onCheck = useCallback(
-    (res: string) => {
-      if (normalize(selectedIndices, 3, 3) === res) {
-        return true;
-      }
-      return false;
-    },
-    [selectedIndices],
-  );
 
   useLayoutEffect(() => {
     (async () => {

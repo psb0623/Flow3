@@ -13,7 +13,7 @@ export const SpeedRun = ({navigation}: Props) => {
   const patternGenerator = useRef(new PatternRandomGenerator(3, 3));
   const timeStarted = useRef(Date.now());
   const [duration, setDuration] = useState<number>();
-  const [answerCount, setAnswerCount] = useState<number>();
+  const [answerCount, setAnswerCount] = useState<number>(0);
   const [answerIndices, setAnswerIndices] = useState<number[]>(
     patternGenerator.current.generate(),
   );
@@ -44,7 +44,7 @@ export const SpeedRun = ({navigation}: Props) => {
         </View>
         <View style={styles.countLayout}>
           <Text>정답 : </Text>
-          {answerCount}
+          <Text>{answerCount}</Text>
         </View>
       </View>
       <View style={styles.patternRendererContainer}>
