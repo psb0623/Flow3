@@ -1,16 +1,15 @@
 // @flow
 import * as React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import * as Timers from 'timers';
 import {useEffect, useRef, useState} from 'react';
-import {PatternRenderer} from '../../../components/Renderer/PatternRenderer';
 import {PatternModule} from '../PatternModule/PatternModule';
 import {PatternRandomGenerator} from '../PatternRandomGenerator';
+import {ChallengeGameStackNavigationProp} from '../../stack/ChallengeGameStack';
 
-const maxSecond = 120;
+const maxSecond = 5;
 
-type Props = {};
-export const SpeedRun = (props: Props) => {
+type Props = {} & ChallengeGameStackNavigationProp;
+export const SpeedRun = ({navigation}: Props) => {
   const patternGenerator = useRef(new PatternRandomGenerator(3, 3));
   const timeStarted = useRef(Date.now());
   const [duration, setDuration] = useState<number>();
@@ -18,6 +17,7 @@ export const SpeedRun = (props: Props) => {
   const [answerIndices, setAnswerIndices] = useState<number[]>(
     patternGenerator.current.generate(),
   );
+  const [modal, setModal] = useState<boolean>(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -53,6 +53,7 @@ export const SpeedRun = (props: Props) => {
             answerIndices={answerIndices}
             onSuccess={() => {
               setAnswerIndices(patternGenerator.current.generate());
+              setAnswerCount((count) => (count as number) + 1);
             }}
           />
         </View>
