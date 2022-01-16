@@ -6,11 +6,13 @@ import {StageGame} from '../Game/StageGame';
 import {StageGameScene} from '../Game/StageGameScene';
 import {GameType} from '../Game/GameType';
 import {StageSelect} from '../Game/StageSelect';
+import {StageGameSuccess} from '../Game/StageGameSucess';
 
 export type StageGameStackType = {
   StageSelect: undefined;
-  StageGame: {gameType: GameType};
+  StageGame: {gameType: GameType; beforeGameStageNumber?: number};
   StageGameScene: {gameStageNumber: number; gameType: GameType};
+  StageGameSuccess: {gameType: GameType};
 };
 
 export type StageGameTypes = keyof StageGameStackType;
@@ -54,8 +56,33 @@ export const StageGameStack = () => {
       <_StageGameStack.Screen
         name={'StageGameScene'}
         component={StageGameScene}
-        options={{
-          title: '업적',
+        options={({
+          route: {
+            params: {gameType, gameStageNumber},
+          },
+        }) => {
+          const title = `${
+            gameType == 'Three' ? '3 X 3' : '4 X 4'
+          } - ${gameStageNumber}`;
+          return {
+            title,
+          };
+        }}
+      />
+      <_StageGameStack.Screen
+        name={'StageGameSuccess'}
+        component={StageGameSuccess}
+        options={({
+          route: {
+            params: {gameType},
+          },
+        }) => {
+          const title = `${
+            gameType == 'Three' ? '3 X 3' : '4 X 4'
+          } - Success!!`;
+          return {
+            title,
+          };
         }}
       />
     </_StageGameStack.Navigator>

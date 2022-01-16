@@ -32,10 +32,13 @@ interface PropsType {
   inactiveColor: string;
   patternMargin: number;
   onCheck?: (res: string) => boolean;
+  onSuccess: () => void;
+  successColor: string;
 }
 
 export function Pattern(props: PropsType) {
   const [isError, setIsError] = useState(false);
+  const [success, setSuccess] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const selectAnim = Array(props.rowCount * props.columnCount)
@@ -145,10 +148,13 @@ export function Pattern(props: PropsType) {
         })();
       } else {
         setIsError(false);
+        setSuccess(true);
         setTimeout(() => {
+          props.onSuccess();
           selectedIndexes.value = [];
+          setSuccess(false);
           canTouch.value = true;
-        }, 1000);
+        }, 500);
       }
     }
   };
@@ -291,11 +297,6 @@ export function Pattern(props: PropsType) {
       <Animated.View style={styles.container} onLayout={onContainerLayout}>
         <TapGestureHandler onGestureEvent={panHandler}>
           <Animated.View style={styles.container}>
-            <View style={styles.msgc}>
-              <Animated.Text style={[msgColor, msgStyle]}>
-                {props.message}
-              </Animated.Text>
-            </View>
             <Animated.View style={cvc} onLayout={onPatternLayout}>
               {Array(props.rowCount * props.columnCount)
                 .fill(0)
@@ -305,6 +306,8 @@ export function Pattern(props: PropsType) {
                       return props.inactiveColor;
                     } else if (isError) {
                       return props.errorColor;
+                    } else if (success) {
+                      return props.successColor;
                     } else {
                       return props.activeColor;
                     }
@@ -356,23 +359,19 @@ Pattern.defaultProps = {
   message: '',
   rowCount: 3,
   columnCount: 3,
-  patternMargin: 25,
+  patternMargin: 0,
   inactiveColor: '#8E91A8',
   activeColor: '#5FA8FC',
   errorColor: '#D93609',
+  successColor: 'green',
   onCheck: () => false,
+  onSuccess: () => {},
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignSelf: 'stretch',
-    alignItems: 'center',
-  },
-  msgc: {
-    flex: 1,
-    justifyContent: 'center',
-    alignSelf: 'center',
+    width: '100%',
+    height: '100%',
   },
   svg: {
     position: 'absolute',
