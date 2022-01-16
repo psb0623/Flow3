@@ -60,8 +60,18 @@ export const StageGameScene = ({
       const answer = stage.answer;
       const answerLen = answer.length;
       const _selectedIndices: number[] = [];
+
+      const hexcharToDec = (c: string) => {
+        if (
+          '0'.charCodeAt(0) <= c.charCodeAt(0) &&
+          c.charCodeAt(0) <= '9'.charCodeAt(0)
+        )
+          return c.charCodeAt(0) - '0'.charCodeAt(0);
+        else return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+      };
+
       for (let i = 0; i < answerLen; i++) {
-        _selectedIndices.push(answer.charCodeAt(i) - '0'.charCodeAt(0));
+        _selectedIndices.push(hexcharToDec(answer[i]));
       }
       setSelectedIndices(_selectedIndices);
     }
