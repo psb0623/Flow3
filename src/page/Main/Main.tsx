@@ -2,9 +2,9 @@ import React from 'react';
 import {StyleSheet, Image} from 'react-native';
 import {AppStackNavigationProp} from '../stack/AppStack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {ChallengeGame} from '../ChallengeGame';
 import {Achieve} from '../Achieve';
 import {StageGameStack} from '../stack/StageGameStack';
+import {ChallengeGameStack} from '../stack/ChallengeGameStack';
 
 type MainTabType = {
   StageGameStack: undefined;
@@ -14,11 +14,7 @@ type MainTabType = {
 
 const Tab = createBottomTabNavigator<MainTabType>();
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type Props = {} & AppStackNavigationProp;
-
-export const Main = ({navigation}: Props) => {
-
+export const Main = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -35,7 +31,6 @@ export const Main = ({navigation}: Props) => {
               />
             );
           }
-
           if (route.name == 'StageGameStack') {
             return (
               <Image
@@ -74,7 +69,7 @@ export const Main = ({navigation}: Props) => {
       />
       <Tab.Screen
         name={'ChallengeGame'}
-        component={ChallengeGame}
+        component={ChallengeGameStack}
         options={{
           title: '도전 모드',
         }}></Tab.Screen>

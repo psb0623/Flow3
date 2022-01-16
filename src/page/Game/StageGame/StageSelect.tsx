@@ -2,10 +2,10 @@
 import * as React from 'react';
 import {Button, View, Text, StyleSheet} from 'react-native';
 import {useCallback, useEffect, useState} from 'react';
-import {StageGameStackNavigationProp} from '../stack/StageGameStack';
-import {BasicButton} from '../../components/BasicButton';
+import {StageGameStackNavigationProp} from '../../stack/StageGameStack';
+import {BasicButton} from '../../../components/BasicButton';
 import ModalSelector from 'react-native-modal-selector';
-import {Pattern} from './Pattern/Pattern';
+import {Pattern} from '../Pattern/Pattern';
 
 type Props = {} & StageGameStackNavigationProp;
 

@@ -2,7 +2,7 @@ import {
   createStackNavigator,
   StackNavigationProp,
 } from '@react-navigation/stack';
-import {Main} from '../Main';
+import {Main} from '../Main/Main';
 import {NavigationContainer} from '@react-navigation/native';
 import {BeforeStart} from '../BeforeStart';
 
