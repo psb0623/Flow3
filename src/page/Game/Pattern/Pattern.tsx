@@ -146,7 +146,8 @@ export function Pattern(props: PropsType) {
   const containerLayout = useSharedValue({width: 0, height: 0, min: 0});
   const R = useDerivedValue(
     () =>
-      (containerLayout.value.min / props.rowCount - props.patternMargin * 2) /
+      (containerLayout.value.min / props.columnCount -
+        props.patternMargin * 2) /
       2,
   );
   const cvc = useAnimatedStyle(() => ({
@@ -205,7 +206,7 @@ export function Pattern(props: PropsType) {
       //  normalize(selectedIndexes.value, props.rowCount, props.columnCount),
       //);
 
-      // canTouch.value = false;
+      canTouch.value = false;
       if (
         !props.onCheck(
           normalize(selectedIndexes.value, props.rowCount, props.columnCount),
@@ -230,9 +231,11 @@ export function Pattern(props: PropsType) {
             (finished) => {},
           );
           setTimeout(() => {
-            runOnJS(closeError)();
-            canTouch.value = true;
-            selectedIndexes.value = [];
+            if (!canTouch.value) {
+              runOnJS(closeError)();
+              canTouch.value = true;
+              selectedIndexes.value = [];
+            }
           }, 700);
         })();
       } else {
@@ -253,32 +256,7 @@ export function Pattern(props: PropsType) {
   };
   const panHandler: (event: GestureEvent<any>) => void =
     useAnimatedGestureHandler({
-      onStart: (evt) => {
-        if (
-          canTouch.value &&
-          patternPoints.value &&
-          selectedIndexes.value.length === 0
-        ) {
-          const selected: number[] = [];
-          const normPath: number[] = [];
-          patternPoints.value.every((p, idx) => {
-            if (
-              (p.x - evt.x) * (p.x - evt.x) + (p.y - evt.y) * (p.y - evt.y) <
-              R.value * R.value
-            ) {
-              selected.push(idx);
-              normPath.push(idx);
-              selectAnim[idx].value = withSpring(2);
-              runOnJS(Vibration.vibrate)(10);
-              runOnJS(fadeIn)();
-              return false;
-            }
-            return true;
-          });
-          selectedIndexes.value = selected;
-          normalizedPath.value = normPath;
-        }
-      },
+      onStart: (evt) => {},
       onActive: (evt) => {
         if (
           canTouch.value &&
@@ -339,6 +317,36 @@ export function Pattern(props: PropsType) {
             return true;
           });
           endPoint.value = {x: evt.x, y: evt.y};
+        }
+
+        if (!canTouch.value && !success) {
+          runOnJS(setIsError)(false);
+          canTouch.value = true;
+          selectedIndexes.value = [];
+        }
+        if (
+          canTouch.value &&
+          patternPoints.value &&
+          selectedIndexes.value.length === 0
+        ) {
+          const selected: number[] = [];
+          const normPath: number[] = [];
+          patternPoints.value.every((p, idx) => {
+            if (
+              (p.x - evt.x) * (p.x - evt.x) + (p.y - evt.y) * (p.y - evt.y) <
+              R.value * R.value
+            ) {
+              selected.push(idx);
+              normPath.push(idx);
+              selectAnim[idx].value = withSpring(2);
+              runOnJS(Vibration.vibrate)(10);
+              runOnJS(fadeIn)();
+              return false;
+            }
+            return true;
+          });
+          selectedIndexes.value = selected;
+          normalizedPath.value = normPath;
         }
       },
       onEnd: (evt) => {
