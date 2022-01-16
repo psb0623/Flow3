@@ -41,6 +41,7 @@ export const PathRenderer = ({
     <Svg style={styles.svg} width="100%" height="100%">
       <AnimatedPath
         fill={fill}
+        strokeLinejoin="round"
         strokeWidth={strokeWidth}
         animatedProps={animatedProps}
         stroke={color}
