@@ -6,7 +6,7 @@ import {
   StageGameStackNavigationProp,
   StageGameStackRouteProp,
 } from '../stack/StageGameStack';
-import {Pattern} from './Pattern/Pattern';
+import {normalize, Pattern} from './Pattern/Pattern';
 import {stageService} from '../../api';
 import {Stage} from './Stage';
 import {PatternRenderer} from '../../components/Renderer/PatternRenderer';
@@ -34,7 +34,7 @@ export const StageGameScene = ({
 
   const onCheck = useCallback(
     (res: string) => {
-      if (selectedIndices?.join('') === res) {
+      if (normalize(selectedIndices, 3, 3) === res) {
         return true;
       }
       return false;
