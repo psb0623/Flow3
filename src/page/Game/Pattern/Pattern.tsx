@@ -48,14 +48,12 @@ export const normalize = (
     let p = path[i - 1];
     let c = path[i];
 
-    let px = p % columnCount;
-    let py = (p / rowCount) >> 0;
-    let cx = c % columnCount;
-    let cy = (c / rowCount) >> 0;
-
-    let inc = py < cy;
-    let jnc = px < cx;
-
+    let px = p % columnCount,
+      py = (p / rowCount) >> 0;
+    let cx = c % columnCount,
+      cy = (c / rowCount) >> 0;
+    let inc = py < cy,
+      jnc = px < cx;
     for (let i = py; i != cy + (inc ? 1 : -1); inc ? i++ : i--) {
       for (let j = px; j != cx + (jnc ? 1 : -1); jnc ? j++ : j--) {
         if (i == py && j == px) continue;

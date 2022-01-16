@@ -6,17 +6,43 @@ export class PatternRandomGenerator {
   }
 
   generate = () => {
-    const temp = new Array<number>();
-    const candidates = new Array(this.size).fill(null).map((_, i) => {
-      return i;
-    });
+    let ret = new Array<number>();
+    let visited = new Array<boolean>(this.size).fill(false);
 
-    while (temp.length < this.size) {
-      const idx = (Math.random() * 2000) % candidates.length;
-      const removed = candidates.splice(idx, 1);
-      temp.push(removed[0]);
+    let start = Math.floor(Math.random() * this.size);
+    ret.push(start);
+    visited[start] = true;
+    let used = 1;
+
+    while (used < this.size) {
+      let p = ret[ret.length - 1];
+      let pool: number[] = [];
+      for (let i = 0; i < visited.length; i++) if (!visited[i]) pool.push(i);
+      let idx = Math.floor(Math.random() * pool.length);
+      let c = pool[idx];
+
+      let px = p % this.column,
+        py = (p / this.row) >> 0;
+      let cx = c % this.column,
+        cy = (c / this.row) >> 0;
+      let inc = py < cy,
+        jnc = px < cx;
+      for (let i = py; i != cy + (inc ? 1 : -1); inc ? i++ : i--) {
+        for (let j = px; j != cx + (jnc ? 1 : -1); jnc ? j++ : j--) {
+          if (i == py && j == px) continue;
+          if (i == cy && j == cx) continue;
+          if ((j - px) * (cy - i) == (i - py) * (cx - j)) {
+            let here = i * this.row + j;
+            ret.push(here);
+            visited[here] = true;
+            used++;
+          }
+        }
+      }
+      ret.push(c);
+      visited[c] = true;
+      used++;
     }
-
-    return temp;
+    return ret;
   };
 }
