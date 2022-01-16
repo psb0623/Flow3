@@ -21,7 +21,6 @@ export const StageGame = ({
   },
 }: Props) => {
   const [stage, setStage] = useState<Stage[] | null>(null);
-
   const goStageGameScene = useCallback((gameStageNumber: number) => {
     navigation.push('StageGameScene', {
       gameStageNumber,

@@ -1,29 +1,49 @@
 // @flow
 import * as React from 'react';
-import {SafeAreaView, Text, View} from 'react-native';
-import {Pattern} from '../Game/Pattern/Pattern';
-import {StageStartButton} from '../../components/StageStartButton';
-import {PatternRenderer} from '../../components/PatternRenderer/PatternRenderer';
+import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {BasicButton} from '../../components/BasicButton';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {};
 export const ChallengeGame = (props: Props) => {
   return (
-    <SafeAreaView style={{width: '100%', height: '100%'}}>
-      <Text>ChallengeGame</Text>
-      <Pattern
-        onCheck={(res) => {
-          return false;
-        }}
-        rowCount={3}
-        activeColor={'#8E91A8'}
-        columnCount={3}
-        errorColor={'#D93609'}
-        patternMargin={25}
-        inactiveColor={'#8E91A8'}
-      />
-
-      <Text>ChallengeGame end</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.selectGameLayout}>
+        <View style={styles.buttonLayout}>
+          <BasicButton
+            onPressed={() => {}}
+            text={'아케이드 모드 시작하기'}></BasicButton>
+        </View>
+        <View style={styles.buttonLayout}>
+          <BasicButton
+            onPressed={() => {}}
+            text={'스피드런 모드 시작하기'}></BasicButton>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    height: '100%',
+    padding: 10,
+  },
+  imageLayout: {
+    width: '100%',
+    height: '50%',
+  },
+  selectGameLayout: {
+    width: '100%',
+    height: '100%',
+    padding: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonLayout: {
+    width: '100%',
+    height: 50,
+    marginBottom: 5,
+  },
+});
