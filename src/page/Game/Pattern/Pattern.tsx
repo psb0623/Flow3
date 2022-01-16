@@ -16,6 +16,7 @@ import Animated, {
   useSharedValue,
   withDelay,
   withSpring,
+  withTiming,
 } from 'react-native-reanimated';
 import Svg, {Path} from 'react-native-svg';
 import {Point} from './Point';
@@ -47,6 +48,8 @@ export function Pattern(props: PropsType) {
 
   const testAnim = useSharedValue<number>(1);
 
+  const lineWidthAnim = useRef(new Animated.Value(3)).current;
+
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -60,6 +63,30 @@ export function Pattern(props: PropsType) {
       toValue: 0,
       duration: 1000,
       easing: EasingNode.linear,
+    }).start();
+  };
+
+  const lineBig = () => {
+    Animated.spring(lineWidthAnim, {
+      stiffness: 400,
+      mass: 1,
+      damping: 10,
+      overshootClamping: false,
+      restSpeedThreshold: 0.001,
+      restDisplacementThreshold: 0.001,
+      toValue: 6,
+    }).start();
+  };
+
+  const lineSmall = () => {
+    Animated.spring(lineWidthAnim, {
+      stiffness: 400,
+      mass: 1,
+      damping: 10,
+      overshootClamping: false,
+      restSpeedThreshold: 0.001,
+      restDisplacementThreshold: 0.001,
+      toValue: 3,
     }).start();
   };
 
@@ -114,17 +141,20 @@ export function Pattern(props: PropsType) {
   };
   const onEndJS = (res) => {
     if (props.onCheck) {
-      canTouch.value = false;
-      if (!props.onCheck(res)) {
+      const unselect = () => {
         selectAnim.forEach((v, idx) => {
           v.value = withDelay(
             selectedIndexes.value.findIndex((v) => v === idx) * 100,
             withSpring(1),
           );
         });
-
-        setIsError(true);
         fadeOut();
+      };
+
+      canTouch.value = false;
+      if (!props.onCheck(res)) {
+        unselect();
+        setIsError(true);
 
         const closeError = () => setIsError(false);
         runOnUI(() => {
@@ -147,9 +177,13 @@ export function Pattern(props: PropsType) {
           );
         })();
       } else {
+        lineBig();
         setIsError(false);
         setSuccess(true);
+
         setTimeout(() => {
+          lineSmall();
+          unselect();
           props.onSuccess();
           selectedIndexes.value = [];
           setSuccess(false);
@@ -342,9 +376,16 @@ export function Pattern(props: PropsType) {
             <Svg style={styles.svg} width="100%" height="100%">
               <AnimatedPath
                 fill="none"
-                strokeWidth={3}
+                strokeLinejoin="round"
+                strokeWidth={lineWidthAnim}
                 animatedProps={animatedProps}
-                stroke={isError ? props.errorColor : props.activeColor}
+                stroke={
+                  isError
+                    ? props.errorColor
+                    : success
+                    ? props.successColor
+                    : props.activeColor
+                }
                 opacity={fadeAnim}
               />
             </Svg>
