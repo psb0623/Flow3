@@ -70,7 +70,7 @@ export function Pattern(props: PropsType) {
     Animated.spring(lineWidthAnim, {
       stiffness: 400,
       mass: 1,
-      damping: 10,
+      damping: 15,
       overshootClamping: false,
       restSpeedThreshold: 0.001,
       restDisplacementThreshold: 0.001,
@@ -82,7 +82,7 @@ export function Pattern(props: PropsType) {
     Animated.spring(lineWidthAnim, {
       stiffness: 400,
       mass: 1,
-      damping: 10,
+      damping: 15,
       overshootClamping: false,
       restSpeedThreshold: 0.001,
       restDisplacementThreshold: 0.001,
@@ -237,8 +237,11 @@ export function Pattern(props: PropsType) {
                 let cy = (c / props.rowCount) >> 0;
                 //console.log(`${py}, ${px} -> ${cy}, ${cx}`);
 
-                for (let i = Math.min(py, cy); i <= Math.max(py, cy); i++) {
-                  for (let j = Math.min(px, cx); j <= Math.max(px, cx); j++) {
+                let inc = py < cy;
+                let jnc = px < cx;
+
+                for (let i = py; i != cy + (inc ? 1 : -1); inc ? i++ : i--) {
+                  for (let j = px; j != cx + (jnc ? 1 : -1); jnc ? j++ : j--) {
                     if (i == py && j == px) continue;
                     if (i == cy && j == cx) continue;
                     if ((j - px) * (cy - i) == (i - py) * (cx - j)) {
