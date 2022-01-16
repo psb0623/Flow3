@@ -38,7 +38,7 @@ export const StageGame = ({
         });
       }
     }
-  }, [stage, beforeGameStageNumber]);
+  });
 
   useLayoutEffect(() => {
     if (gameType === 'Three') {
