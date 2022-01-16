@@ -54,9 +54,6 @@ export const StageGameStack = () => {
       <_StageGameStack.Screen
         name={'StageGameScene'}
         component={StageGameScene}
-        options={{
-          title: '업적',
-        }}
       />
     </_StageGameStack.Navigator>
   );

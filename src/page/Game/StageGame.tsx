@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {SafeAreaView, View} from 'react-native';
+import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {StageGameScene} from './StageGameScene';
 import {
@@ -34,7 +34,7 @@ export const StageGame = ({
     if (gameType === 'Three') {
       (async () => {
         const {data} = await stageService.getStage3();
-        console.log(data);
+        console.log(data[0]);
         setStage(data);
       })();
     }
@@ -46,16 +46,16 @@ export const StageGame = ({
         setStage(data);
       })();
     }
-
     return () => {
       setStage(null);
     };
   }, [gameType]);
 
   return (
-    <SafeAreaView>
+    <View style={styles.container}>
       {stage && (
         <FlatGrid
+          centerContent={true}
           data={stage}
           renderItem={({index}) => (
             <StageStartButton
@@ -66,11 +66,17 @@ export const StageGame = ({
               }}
             />
           )}
-          keyExtractor={() => {
-            return Math.random().toString();
+          keyExtractor={(item) => {
+            return item.id.toString();
           }}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+  },
+});

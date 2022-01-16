@@ -34,14 +34,19 @@ const styles = StyleSheet.create({
   centeredView: {
     width: '100%',
     height: '100%',
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
   button: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 10,
     elevation: 2,
     backgroundColor: '#2196F3',
     width: '100%',
+    height: '100%',
   },
   textStyle: {
     color: 'white',

@@ -21,7 +21,9 @@ export const StageGameScene = ({
   },
 }: Props) => {
   const [stage, setStage] = useState<Stage | null>(null);
-
+  const [selectedIndices, setSelectedIndices] = useState<Array<number> | null>(
+    null,
+  );
   const goNextGameStage = useCallback((gameStageNumber) => {
     navigation.navigate('StageGameScene', {
       gameStageNumber: gameStageNumber,
@@ -47,13 +49,25 @@ export const StageGameScene = ({
     })();
   }, [gameStageNumber, gameType]);
 
-  let answer = stage?.answer;
-  let selectedIndices: number[] = [];
-  if (answer) {
-    for (let i = 0; i < answer?.length; i++) {
-      selectedIndices.push(answer.charCodeAt(i) - '0'.charCodeAt(0));
+  useEffect(() => {
+    console.log(stage);
+    if (stage != null) {
+      const answer = stage.answer;
+      const answerLen = answer.length;
+      const _selectedIndices: number[] = [];
+      for (let i = 0; i < answerLen; i++) {
+        _selectedIndices.push(answer.charCodeAt(i) - '0'.charCodeAt(0));
+      }
+      setSelectedIndices(_selectedIndices);
     }
-  }
+  }, [stage]);
+
+  useEffect(() => {
+    return () => {
+      setStage(null);
+      setSelectedIndices(null);
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,11 +78,13 @@ export const StageGameScene = ({
           goNextGameStage(gameStageNumber + 1);
         }}
       />
-      <PatternRenderer
-        selectedIndexes={selectedIndices}
-        columnCount={3}
-        rowCount={3}
-      />
+      {selectedIndices && (
+        <PatternRenderer
+          selectedIndexes={selectedIndices}
+          columnCount={3}
+          rowCount={3}
+        />
+      )}
       <Pattern
         onCheck={(res) => {
           return false;

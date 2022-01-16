@@ -46,6 +46,10 @@ export const PatternRenderer = ({
       min: Math.min(width, height),
     });
 
+  useEffect(() => {
+    selectedIndexes.value = _selectedIndexes;
+  }, [_selectedIndexes]);
+
   const R = useDerivedValue(
     () => (containerLayout.value.min / rowCount - patternMargin * 2) / 2,
   );
