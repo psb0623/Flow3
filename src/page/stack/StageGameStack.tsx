@@ -54,6 +54,18 @@ export const StageGameStack = () => {
       <_StageGameStack.Screen
         name={'StageGameScene'}
         component={StageGameScene}
+        options={({
+          route: {
+            params: {gameType, gameStageNumber},
+          },
+        }) => {
+          const title = `${
+            gameType == 'Three' ? '3 X 3' : '4 X 4'
+          } - ${gameStageNumber}`;
+          return {
+            title,
+          };
+        }}
       />
     </_StageGameStack.Navigator>
   );

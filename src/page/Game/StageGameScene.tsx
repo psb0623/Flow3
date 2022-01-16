@@ -71,13 +71,6 @@ export const StageGameScene = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <BackButton navigation={navigation} />
-      <Button
-        title={'next'}
-        onPress={() => {
-          goNextGameStage(gameStageNumber + 1);
-        }}
-      />
       {selectedIndices && (
         <PatternRenderer
           selectedIndexes={selectedIndices}
