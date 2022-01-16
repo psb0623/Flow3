@@ -205,7 +205,7 @@ export function Pattern(props: PropsType) {
       //  normalize(selectedIndexes.value, props.rowCount, props.columnCount),
       //);
 
-      canTouch.value = false;
+      // canTouch.value = false;
       if (
         !props.onCheck(
           normalize(selectedIndexes.value, props.rowCount, props.columnCount),

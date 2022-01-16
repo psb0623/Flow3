@@ -8,10 +8,12 @@ import {ChallengeGameStackNavigationProp} from '../../stack/ChallengeGameStack';
 import {Modal} from 'react-native';
 import {ProgressBar} from 'react-native-paper';
 
+const timeReduceRatio = 0.95;
+
 type Props = {} & ChallengeGameStackNavigationProp;
 export const SpeedRun = ({navigation}: Props) => {
   const patternGenerator = useRef(new PatternRandomGenerator(3, 3));
-  const [maxSecond, setMaxSecond] = useState<number>(5);
+  const [maxSecond, setMaxSecond] = useState<number>(10);
   const timeStarted = useRef(Date.now());
   const [duration, setDuration] = useState<number>();
   const [answerCount, setAnswerCount] = useState<number>(0);
@@ -20,6 +22,7 @@ export const SpeedRun = ({navigation}: Props) => {
   );
   const [progress, setProgress] = useState(1);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const interval = useRef<any>();
 
   useEffect(() => {
     if (duration == null) {
@@ -30,11 +33,11 @@ export const SpeedRun = ({navigation}: Props) => {
   }, [maxSecond, duration]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    interval.current = setInterval(() => {
       const leftTime = timeStarted.current + maxSecond * 1000 - Date.now();
       if (leftTime < 0) {
         setDuration(0);
-        clearInterval(interval);
+        clearInterval(interval.current);
         setModalVisible(true);
       } else {
         setDuration(leftTime);
@@ -42,7 +45,7 @@ export const SpeedRun = ({navigation}: Props) => {
     }, 500);
 
     return () => {
-      clearInterval(interval);
+      clearInterval(interval.current);
     };
   }, [timeStarted.current]);
 
@@ -59,8 +62,12 @@ export const SpeedRun = ({navigation}: Props) => {
           <PatternModule
             answerIndices={answerIndices}
             onSuccess={() => {
-              setAnswerIndices(patternGenerator.current.generate());
-              setAnswerCount((count) => (count as number) + 1);
+              if (!modalVisible) {
+                setMaxSecond(Math.max(maxSecond * timeReduceRatio, 2));
+                timeStarted.current = Date.now();
+                setAnswerIndices(patternGenerator.current.generate());
+                setAnswerCount((count) => (count as number) + 1);
+              }
             }}
           />
         </View>
@@ -69,6 +76,9 @@ export const SpeedRun = ({navigation}: Props) => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
+        onShow={() => {
+          clearInterval(interval.current);
+        }}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
         }}>
