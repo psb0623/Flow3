@@ -46,7 +46,7 @@ export const PatternModule = ({
           activeColor={'#8E91A8'}
           columnCount={3}
           errorColor={'#D93609'}
-          patternMargin={25}
+          patternMargin={20}
           inactiveColor={'#8E91A8'}
         />
       </View>
