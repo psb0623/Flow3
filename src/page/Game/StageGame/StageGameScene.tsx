@@ -77,6 +77,8 @@ export const StageGameScene = ({
   return (
     selectedIndices && (
       <PatternModule
+        row={gameType === 'Three' ? 3 : 4}
+        column={gameType === 'Three' ? 3 : 4}
         answerIndices={selectedIndices}
         onSuccess={() => {
           goNextGameStage(gameStageNumber + 1);
