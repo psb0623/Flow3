@@ -16,6 +16,7 @@ import Animated, {
   useSharedValue,
   withDelay,
   withSpring,
+  withTiming,
 } from 'react-native-reanimated';
 import Svg, {Path} from 'react-native-svg';
 import {Point} from './Point';
@@ -36,6 +37,54 @@ interface PropsType {
   successColor: string;
 }
 
+export const normalize = (
+  path: number[] | null,
+  rowCount: number,
+  columnCount: number,
+) => {
+  if (path === null) return 'hello';
+  let normPath: number[] = [path[0]];
+  for (let i = 1; i < path.length; i++) {
+    let p = path[i - 1];
+    let c = path[i];
+
+    let px = p % columnCount;
+    let py = (p / rowCount) >> 0;
+    let cx = c % columnCount;
+    let cy = (c / rowCount) >> 0;
+
+    let inc = py < cy;
+    let jnc = px < cx;
+
+    for (let i = py; i != cy + (inc ? 1 : -1); inc ? i++ : i--) {
+      for (let j = px; j != cx + (jnc ? 1 : -1); jnc ? j++ : j--) {
+        if (i == py && j == px) continue;
+        if (i == cy && j == cx) continue;
+        if ((j - px) * (cy - i) == (i - py) * (cx - j)) {
+          normPath.push(i * rowCount + j);
+        }
+      }
+    }
+    normPath.push(c);
+  }
+  const ret = Array.from(Array(rowCount * columnCount), () =>
+    Array(rowCount * columnCount).fill(0),
+  );
+
+  for (let i = 1; i < normPath.length; i++) {
+    ret[normPath[i - 1]][normPath[i]] = 1;
+    ret[normPath[i]][normPath[i - 1]] = 1;
+  }
+
+  let res = ret
+    .map((v: Array<number>) => {
+      return v.join('');
+    })
+    .join('\n');
+  //console.log(res);
+  return res;
+};
+
 export function Pattern(props: PropsType) {
   const [isError, setIsError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -46,6 +95,8 @@ export function Pattern(props: PropsType) {
     .map((_, idx) => useSharedValue<number>(1));
 
   const testAnim = useSharedValue<number>(1);
+
+  const lineWidthAnim = useRef(new Animated.Value(3)).current;
 
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
@@ -58,14 +109,41 @@ export function Pattern(props: PropsType) {
   const fadeOut = () => {
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 1000,
+      duration: 700,
       easing: EasingNode.linear,
+    }).start();
+  };
+
+  const lineBig = () => {
+    Animated.spring(lineWidthAnim, {
+      stiffness: 400,
+      mass: 1,
+      damping: 15,
+      overshootClamping: false,
+      restSpeedThreshold: 0.001,
+      restDisplacementThreshold: 0.001,
+      toValue: 6,
+    }).start();
+  };
+
+  const lineSmall = () => {
+    Animated.spring(lineWidthAnim, {
+      stiffness: 400,
+      mass: 1,
+      damping: 15,
+      overshootClamping: false,
+      restSpeedThreshold: 0.001,
+      restDisplacementThreshold: 0.001,
+      toValue: 3,
     }).start();
   };
 
   const canTouch = useSharedValue(true);
   const patternPoints = useSharedValue<Point[] | null>(null);
   const selectedIndexes = useSharedValue<number[]>([]);
+
+  const normalizedPath = useSharedValue<number[]>([]);
+
   const endPoint = useSharedValue<Point | null>(null);
   const containerLayout = useSharedValue({width: 0, height: 0, min: 0});
   const R = useDerivedValue(
@@ -114,17 +192,29 @@ export function Pattern(props: PropsType) {
   };
   const onEndJS = (res) => {
     if (props.onCheck) {
-      canTouch.value = false;
-      if (!props.onCheck(res)) {
+      const unselect = () => {
         selectAnim.forEach((v, idx) => {
           v.value = withDelay(
-            selectedIndexes.value.findIndex((v) => v === idx) * 100,
+            (selectedIndexes.value.findIndex((v) => v === idx) * 900) /
+              (props.rowCount * props.columnCount),
             withSpring(1),
           );
         });
-
-        setIsError(true);
         fadeOut();
+      };
+
+      //console.log(
+      //  normalize(selectedIndexes.value, props.rowCount, props.columnCount),
+      //);
+
+      canTouch.value = false;
+      if (
+        !props.onCheck(
+          normalize(selectedIndexes.value, props.rowCount, props.columnCount),
+        )
+      ) {
+        unselect();
+        setIsError(true);
 
         const closeError = () => setIsError(false);
         runOnUI(() => {
@@ -135,21 +225,26 @@ export function Pattern(props: PropsType) {
             msgX.value === 0 ? 0.1 : 0,
             {
               stiffness: 2000,
-              damping: 10,
+              damping: 100,
               mass: 1,
               velocity: 2000,
             },
-            (finished) => {
-              runOnJS(closeError)();
-              canTouch.value = true;
-              selectedIndexes.value = [];
-            },
+            (finished) => {},
           );
+          setTimeout(() => {
+            runOnJS(closeError)();
+            canTouch.value = true;
+            selectedIndexes.value = [];
+          }, 700);
         })();
       } else {
+        lineBig();
         setIsError(false);
         setSuccess(true);
+
         setTimeout(() => {
+          lineSmall();
+          unselect();
           props.onSuccess();
           selectedIndexes.value = [];
           setSuccess(false);
@@ -167,12 +262,14 @@ export function Pattern(props: PropsType) {
           selectedIndexes.value.length === 0
         ) {
           const selected: number[] = [];
+          const normPath: number[] = [];
           patternPoints.value.every((p, idx) => {
             if (
               (p.x - evt.x) * (p.x - evt.x) + (p.y - evt.y) * (p.y - evt.y) <
               R.value * R.value
             ) {
               selected.push(idx);
+              normPath.push(idx);
               selectAnim[idx].value = withSpring(2);
               runOnJS(Vibration.vibrate)(10);
               runOnJS(fadeIn)();
@@ -181,6 +278,7 @@ export function Pattern(props: PropsType) {
             return true;
           });
           selectedIndexes.value = selected;
+          normalizedPath.value = normPath;
         }
       },
       onActive: (evt) => {
@@ -201,10 +299,12 @@ export function Pattern(props: PropsType) {
                 let py = (p / props.rowCount) >> 0;
                 let cx = c % props.columnCount;
                 let cy = (c / props.rowCount) >> 0;
-                //console.log(`${py}, ${px} -> ${cy}, ${cx}`);
 
-                for (let i = Math.min(py, cy); i <= Math.max(py, cy); i++) {
-                  for (let j = Math.min(px, cx); j <= Math.max(px, cx); j++) {
+                let inc = py < cy;
+                let jnc = px < cx;
+
+                for (let i = py; i != cy + (inc ? 1 : -1); inc ? i++ : i--) {
+                  for (let j = px; j != cx + (jnc ? 1 : -1); jnc ? j++ : j--) {
                     if (i == py && j == px) continue;
                     if (i == cy && j == cx) continue;
                     if ((j - px) * (cy - i) == (i - py) * (cx - j)) {
@@ -219,12 +319,17 @@ export function Pattern(props: PropsType) {
                         selectAnim[i * props.rowCount + j].value =
                           withSpring(2);
                       }
+                      normalizedPath.value = [
+                        ...normalizedPath.value,
+                        i * props.rowCount + j,
+                      ];
                       //console.log(`inter : ${i}, ${j}`);
                     }
                   }
                 }
 
                 selectedIndexes.value = [...selectedIndexes.value, idx];
+                normalizedPath.value = [...normalizedPath.value, idx];
                 selectAnim[idx].value = withSpring(2);
                 cancelAnimation(testAnim);
                 testAnim.value = 1;
@@ -242,8 +347,11 @@ export function Pattern(props: PropsType) {
         if (!canTouch.value) return;
         endPoint.value = null;
         //testAnim.value = 0;
-        if (selectedIndexes.value.length > 0)
+        if (selectedIndexes.value.length > 0) {
+          //console.log(normalizedPath.value);
+          //runOnJS(console.log)(normalize(selectedIndexes.value));
           runOnJS(onEndJS)(selectedIndexes.value.join(''));
+        }
       },
     });
   const animatedProps = useAnimatedProps(() => {
@@ -342,9 +450,16 @@ export function Pattern(props: PropsType) {
             <Svg style={styles.svg} width="100%" height="100%">
               <AnimatedPath
                 fill="none"
-                strokeWidth={3}
+                strokeLinejoin="round"
+                strokeWidth={lineWidthAnim}
                 animatedProps={animatedProps}
-                stroke={isError ? props.errorColor : props.activeColor}
+                stroke={
+                  isError
+                    ? props.errorColor
+                    : success
+                    ? props.successColor
+                    : props.activeColor
+                }
                 opacity={fadeAnim}
               />
             </Svg>
