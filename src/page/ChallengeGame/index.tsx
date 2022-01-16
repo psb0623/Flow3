@@ -3,7 +3,7 @@ import * as React from 'react';
 import {SafeAreaView, Text, View} from 'react-native';
 import {Pattern} from '../Game/Pattern/Pattern';
 import {StageStartButton} from '../../components/StageStartButton';
-import {PatternRenderer} from '../../components/PatternRenderer/PatternRenderer';
+import {PatternRenderer} from '../../components/Renderer/PatternRenderer';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {};
@@ -15,9 +15,9 @@ export const ChallengeGame = (props: Props) => {
         onCheck={(res) => {
           return false;
         }}
-        rowCount={3}
+        rowCount={4}
         activeColor={'#8E91A8'}
-        columnCount={3}
+        columnCount={4}
         errorColor={'#D93609'}
         patternMargin={25}
         inactiveColor={'#8E91A8'}

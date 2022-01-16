@@ -68,7 +68,7 @@ export const StageGameScene = ({
   }, [gameStageNumber, gameType]);
 
   useEffect(() => {
-    if (stage != null) {
+    if (stage != null && stage.answer != null) {
       const answer = stage.answer;
       const answerLen = answer.length;
       const _selectedIndices: number[] = [];
