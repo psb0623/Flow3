@@ -1,23 +1,33 @@
 // @flow
 import * as React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useEffect, useRef, useState} from 'react';
 import {PatternModule} from '../PatternModule/PatternModule';
 import {PatternRandomGenerator} from '../PatternRandomGenerator';
 import {ChallengeGameStackNavigationProp} from '../../stack/ChallengeGameStack';
-
-const maxSecond = 5;
+import {Modal} from 'react-native';
+import {ProgressBar} from 'react-native-paper';
 
 type Props = {} & ChallengeGameStackNavigationProp;
 export const SpeedRun = ({navigation}: Props) => {
   const patternGenerator = useRef(new PatternRandomGenerator(3, 3));
+  const [maxSecond, setMaxSecond] = useState<number>(5);
   const timeStarted = useRef(Date.now());
   const [duration, setDuration] = useState<number>();
   const [answerCount, setAnswerCount] = useState<number>(0);
   const [answerIndices, setAnswerIndices] = useState<number[]>(
     patternGenerator.current.generate(),
   );
-  const [modal, setModal] = useState<boolean>(false);
+  const [progress, setProgress] = useState(1);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (duration == null) {
+      setProgress(1);
+    } else {
+      setProgress(duration / (maxSecond * 1000));
+    }
+  }, [maxSecond, duration]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,26 +35,23 @@ export const SpeedRun = ({navigation}: Props) => {
       if (leftTime < 0) {
         setDuration(0);
         clearInterval(interval);
+        setModalVisible(true);
       } else {
         setDuration(leftTime);
       }
-    }, 10);
+    }, 500);
 
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [timeStarted.current]);
 
   return (
     <View style={styles.container}>
+      <ProgressBar progress={progress} color="#49B5F2" />
       <View style={styles.header}>
-        <View style={styles.timeLayout}>
-          <Text>시간</Text>
-          <Text>{((duration ?? 1) / 1000).toFixed()}</Text>
-        </View>
         <View style={styles.countLayout}>
-          <Text>정답 : </Text>
-          <Text>{answerCount}</Text>
+          <Text style={styles.count}>{answerCount}</Text>
         </View>
       </View>
       <View style={styles.patternRendererContainer}>
@@ -58,6 +65,27 @@ export const SpeedRun = ({navigation}: Props) => {
           />
         </View>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Answer : {answerCount}</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                navigation.pop();
+                setModalVisible(!modalVisible);
+              }}>
+              <Text style={styles.textStyle}>종료</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -69,9 +97,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  countLayout: {},
+  countLayout: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  count: {
+    textAlign: 'center',
+    fontSize: 40,
+  },
   patternRendererLayout: {
     width: '80%',
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -85,5 +124,49 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     height: '20%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
