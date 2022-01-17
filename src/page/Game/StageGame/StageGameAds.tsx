@@ -1,4 +1,4 @@
-import {
+/*import {
   RewardedAd,
   TestIds,
   RewardedAdEventType,
@@ -26,4 +26,4 @@ export const getAds = () => {
   } catch (error) {
     console.log('catch error', error);
   }
-};
+};*/
