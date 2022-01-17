@@ -21,6 +21,7 @@ import Animated, {
 import Svg, {Path, Defs, Marker} from 'react-native-svg';
 import {Point} from './Point';
 import {GestureEvent} from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon';
+import {hintRepository} from '../../../repository/HintRepository';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -185,7 +186,6 @@ export function Pattern(props: PropsType) {
 
   useEffect(() => {
     if (props.hint) {
-      console.log('hint use');
       Animated.timing(hintAnim, {
         toValue: -50000000,
         duration: 1000000000,
@@ -197,6 +197,8 @@ export function Pattern(props: PropsType) {
         duration: 500,
         easing: EasingNode.linear,
       }).start();
+
+      hintRepository.minusHintCount();
     } else {
       hintOpAnim.setValue(0);
     }
@@ -551,6 +553,7 @@ Pattern.defaultProps = {
   onCheck: undefined,
   onSuccess: () => {},
   answerIndices: [],
+  hint: false,
 };
 
 const styles = StyleSheet.create({

@@ -8,10 +8,8 @@ import {stageService} from '../../../api';
 import {Stage} from './Stage';
 import {PatternModule} from '../PatternModule/PatternModule';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {
-  stageRepository,
-  StageRepository,
-} from '../../../repository/StageRepository';
+import {stageRepository} from '../../../repository/StageRepository';
+import {hintRepository} from '../../../repository/HintRepository';
 
 type Props = StageGameStackNavigationProp &
   StageGameStackRouteProp<'StageGameScene'>;
@@ -28,6 +26,14 @@ export const StageGameScene = ({
   );
 
   const [hint, setHint] = useState<boolean>(false);
+  const [hintCount, setHintCount] = useState<number>(0);
+
+  useEffect(() => {
+    (async () => {
+      const _hintCount = await hintRepository.getHintCount();
+      setHintCount(_hintCount);
+    })();
+  }, [hint]);
 
   const goNextGameStage = useCallback((gameStageNumber) => {
     navigation.navigate('StageGameScene', {
@@ -94,7 +100,15 @@ export const StageGameScene = ({
     selectedIndices && (
       <>
         <Pressable
-          onPress={() => setHint(true)}
+          onPress={() => {
+            if (hintCount > 0) {
+              setHint(true);
+              (async () => {
+                await hintRepository.minusHintCount();
+                setHintCount(await hintRepository.getHintCount());
+              })();
+            }
+          }}
           style={[
             styles.button,
             {
@@ -111,8 +125,7 @@ export const StageGameScene = ({
             source={require('./eletronic.png')}
             style={{width: 20, height: 20}}
           />
-          <Text style={styles.textStyle}> </Text>
-          <Text style={styles.textStyle}>5</Text>
+          <Text style={styles.textStyle}>{hintCount}</Text>
         </Pressable>
         <View
           style={{

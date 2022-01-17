@@ -3,6 +3,8 @@ import {
   NativeSyntheticEvent,
   NativeTouchEvent,
   StyleSheet,
+  Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {BasicButton} from './BasicButton';
@@ -29,12 +31,24 @@ export const StageStartButton = ({title, onPressed, enable}: Props) => {
             alignItems: 'center',
           },
         ]}>
-        <BasicButton
-          borderRadius={25}
-          text={title}
-          onPressed={onPressed}
-          enable={enable}
-        />
+        <TouchableOpacity
+          onPress={onPressed}
+          disabled={!enable}
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: `${enable ? '#2196F3' : '#D3D3D3'}`,
+          }}>
+          <Text
+            style={{
+              color: 'white',
+            }}>
+            {title}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -50,8 +64,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   button: {
-    width: 50,
-    height: 50,
+    width: '100%',
+    height: '100%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
