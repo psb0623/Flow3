@@ -19,7 +19,7 @@ export const PatternModule = ({
 }: Props) => {
   const onCheck = useCallback(
     (res: string) => {
-      if (normalize(answerIndices, 3, 3) === res) {
+      if (normalize(answerIndices, row, column) === res) {
         return true;
       }
       return false;
@@ -33,8 +33,8 @@ export const PatternModule = ({
         <View style={styles.patternRendererLayout}>
           <PatternRenderer
             selectedIndexes={answerIndices}
-            columnCount={3}
-            rowCount={3}
+            columnCount={column}
+            rowCount={row}
           />
         </View>
       </View>
@@ -42,11 +42,11 @@ export const PatternModule = ({
         <Pattern
           onSuccess={onSuccess}
           onCheck={onCheck}
-          rowCount={3}
+          rowCount={row}
           activeColor={'#8E91A8'}
-          columnCount={3}
+          columnCount={column}
           errorColor={'#D93609'}
-          patternMargin={25}
+          //patternMargin={25}
           inactiveColor={'#8E91A8'}
         />
       </View>

@@ -50,8 +50,13 @@ export const PatternRenderer = ({
     selectedIndexes.value = _selectedIndexes;
   }, [_selectedIndexes]);
 
+  const realPatternMargin = useDerivedValue(() =>
+    Math.floor((containerLayout.value.min / columnCount / 2) * patternMargin),
+  );
+
   const R = useDerivedValue(
-    () => (containerLayout.value.min / rowCount - patternMargin * 2) / 2,
+    () =>
+      (containerLayout.value.min / rowCount - realPatternMargin.value * 2) / 2,
   );
   const patternPoints = useSharedValue<Point[] | null>(null);
 
@@ -109,14 +114,16 @@ export const PatternRenderer = ({
                 justifyContent: 'center',
                 borderColor: patternColor,
                 borderRadius: 2 * R.value,
-                margin: patternMargin,
+                margin: realPatternMargin.value,
               };
             });
             const inner = useAnimatedStyle(() => {
               return {
-                width: R.value * 1,
-                height: R.value * 1,
-                borderRadius: R.value * 1,
+                width:
+                  R.value * 0.4 * (selectedIndexes.value.includes(idx) ? 2 : 1),
+                height:
+                  R.value * 0.4 * (selectedIndexes.value.includes(idx) ? 2 : 1),
+                borderRadius: R.value * 0.4,
                 backgroundColor: backgroundColor,
               };
             });
@@ -136,7 +143,7 @@ export const PatternRenderer = ({
 };
 
 PatternRenderer.defaultProps = {
-  patternMargin: 25,
+  patternMargin: 5 / 11,
   error: false,
   inactiveColor: '#8E91A8',
   activeColor: '#5FA8FC',
