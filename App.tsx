@@ -4,11 +4,13 @@ import {useEffect, useState} from "react";
 import {Splash} from "./src/page/Splash";
 import { View } from "react-native";
 import { backgroundMusic } from "./src/audio/BackGroundSound";
+import GoogleSigninProgress from "./src/api/configure/GoogleLogIn";
 
 export default function App() {
   backgroundMusic();
 
   const [load, setLoad] = useState<Boolean>(false)
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -17,6 +19,6 @@ export default function App() {
   }, [setLoad])
 
   return (
-        !load ? <Splash/>: <AppStack/>
+        !load ? <Splash/>: <GoogleSigninProgress/>
   );
 };

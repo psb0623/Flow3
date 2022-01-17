@@ -12,6 +12,7 @@ export const BeforeStart = ({navigation}: Props & AppStackNavigationProp) => {
     navigation.navigate('Main');
   }, []);
 
+
   return (
     <SafeAreaView>
       <StatusBar hidden></StatusBar>
