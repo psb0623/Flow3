@@ -11,11 +11,11 @@ const alphabetGeneratorFactory = function* (alphabet: Array<number>) {
   }
 };
 
-const patternGenerator = function* () {
-  yield alphabetGeneratorFactory(_p);
-  yield alphabetGeneratorFactory(_a);
-  yield alphabetGeneratorFactory(_t);
-  yield alphabetGeneratorFactory(_e);
-  yield alphabetGeneratorFactory(_r);
-  yield alphabetGeneratorFactory(_n);
-};
+// export const patternGenerator = function* () {
+//   yield alphabetGeneratorFactory(_p);
+//   yield alphabetGeneratorFactory(_a);
+//   yield alphabetGeneratorFactory(_t);
+//   yield alphabetGeneratorFactory(_e);
+//   yield alphabetGeneratorFactory(_r);
+//   yield alphabetGeneratorFactory(_n);
+// };

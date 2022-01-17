@@ -87,7 +87,6 @@ export function Pattern(props: PropsType) {
   const [isError, setIsError] = useState(false);
   const [success, setSuccess] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
-
   const selectAnim = Array(props.rowCount * props.columnCount)
     .fill(0)
     .map((_, idx) => useSharedValue<number>(1));
@@ -144,10 +143,14 @@ export function Pattern(props: PropsType) {
 
   const endPoint = useSharedValue<Point | null>(null);
   const containerLayout = useSharedValue({width: 0, height: 0, min: 0});
+  const patternMargin = useDerivedValue(
+    () =>
+      (containerLayout.value.min / props.columnCount / 2) * props.patternMargin,
+  );
   const R = useDerivedValue(
     () =>
       (containerLayout.value.min / props.columnCount -
-        props.patternMargin * 2) /
+        patternMargin.value * 2) /
       2,
   );
   const cvc = useAnimatedStyle(() => ({
@@ -243,8 +246,7 @@ export function Pattern(props: PropsType) {
         setIsError(false);
         setSuccess(true);
 
-        props.onSuccess();
-
+        setTimeout(props.onSuccess, 1);
         setTimeout(() => {
           lineSmall();
           unselect();
@@ -436,7 +438,7 @@ export function Pattern(props: PropsType) {
                       justifyContent: 'center',
                       borderColor: patternColor.value,
                       borderRadius: 2 * R.value,
-                      margin: props.patternMargin,
+                      margin: patternMargin.value,
                     };
                   });
                   const inner = useAnimatedStyle(() => {
@@ -481,7 +483,7 @@ Pattern.defaultProps = {
   message: '',
   rowCount: 3,
   columnCount: 3,
-  patternMargin: 0,
+  patternMargin: 5 / 11,
   inactiveColor: '#8E91A8',
   activeColor: '#5FA8FC',
   errorColor: '#D93609',
