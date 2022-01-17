@@ -35,6 +35,7 @@ interface PropsType {
   onCheck?: (res: string) => boolean;
   onSuccess: () => void;
   successColor: string;
+  selectedIndices: number[];
 }
 
 export const normalize = (
@@ -141,7 +142,11 @@ export function Pattern(props: PropsType) {
 
   const canTouch = useSharedValue(true);
   const patternPoints = useSharedValue<Point[] | null>(null);
-  const selectedIndexes = useSharedValue<number[]>([]);
+  const selectedIndexes = useSharedValue<number[]>(props.selectedIndices);
+
+  useEffect(() => {
+    selectedIndexes.value = props.selectedIndices;
+  }, [props.selectedIndices]);
 
   const normalizedPath = useSharedValue<number[]>([]);
 
@@ -494,7 +499,8 @@ Pattern.defaultProps = {
   activeColor: '#5FA8FC',
   errorColor: '#D93609',
   successColor: 'green',
-  onCheck: () => false,
+  selectedIndices: [],
+  onCheck: undefined,
   onSuccess: () => {},
 };
 

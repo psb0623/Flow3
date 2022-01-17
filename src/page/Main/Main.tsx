@@ -1,8 +1,6 @@
 import React from 'react';
 import {StyleSheet, Image} from 'react-native';
-import {AppStackNavigationProp} from '../stack/AppStack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Achieve} from '../Achieve';
 import {StageGameStack} from '../stack/StageGameStack';
 import {ChallengeGameStack} from '../stack/ChallengeGameStack';
 import {PublicTab} from '../Game/Public/Public';

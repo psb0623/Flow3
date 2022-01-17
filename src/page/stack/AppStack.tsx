@@ -4,13 +4,11 @@ import {
 } from '@react-navigation/stack';
 import {Main} from '../Main/Main';
 import {NavigationContainer} from '@react-navigation/native';
-import {BeforeStart} from '../BeforeStart';
-import {Login} from '../Login/Login';
 
 export type AppStackType = {
   Main: undefined;
   BeforeStart: undefined;
-  Login: undefined;
+  Logout: undefined;
 };
 
 export type AppTypes = keyof AppStackType;
@@ -27,14 +25,12 @@ export type AppStackRouteProp = Required<{
 
 const Stack = createStackNavigator<AppStackType>();
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {};
 
 export const AppStack = ({}: Props) => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name={'Login'} component={Login} />
         <Stack.Screen name={'Main'} component={Main} />
       </Stack.Navigator>
     </NavigationContainer>

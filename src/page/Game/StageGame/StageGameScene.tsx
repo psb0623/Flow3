@@ -7,9 +7,11 @@ import {
 import {stageService} from '../../../api';
 import {Stage} from './Stage';
 import {PatternModule} from '../PatternModule/PatternModule';
-import {normalize} from '../Pattern/Pattern';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
-import {BasicButton} from '../../../components/BasicButton';
+import {
+  stageRepository,
+  StageRepository,
+} from '../../../repository/StageRepository';
 
 type Props = StageGameStackNavigationProp &
   StageGameStackRouteProp<'StageGameScene'>;
@@ -125,7 +127,17 @@ export const StageGameScene = ({
                 row={gameType === 'Three' ? 3 : 4}
                 column={gameType === 'Three' ? 3 : 4}
                 answerIndices={selectedIndices}
-                onSuccess={() => {
+                onSuccess={async () => {
+                  if (gameType === 'Three') {
+                    await stageRepository.saveLastClearStage3(
+                      gameStageNumber + 1,
+                    );
+                  }
+                  if (gameType === 'Four') {
+                    await stageRepository.saveLastClearStage4(
+                      gameStageNumber + 1,
+                    );
+                  }
                   goNextGameStage(gameStageNumber + 1);
                 }}
               />

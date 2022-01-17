@@ -5,18 +5,23 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import {stageService} from '../api';
-import {useEffect} from 'react';
 import {BasicButton} from './BasicButton';
 
 interface Props {
   title: string;
   onPressed: (...args: any[]) => void;
+  enable: boolean;
 }
 
-export const StageStartButton = ({title, onPressed}: Props) => {
+export const StageStartButton = ({title, onPressed, enable}: Props) => {
   return (
-    <View style={styles.buttonWrapper}>
+    <View
+      style={[
+        styles.buttonWrapper,
+        {
+          backgroundColor: `${enable ? '#2196F3' : '#D3D3D3'}`,
+        },
+      ]}>
       <View
         style={[
           styles.button,
@@ -24,7 +29,12 @@ export const StageStartButton = ({title, onPressed}: Props) => {
             alignItems: 'center',
           },
         ]}>
-        <BasicButton borderRadius={25} text={title} onPressed={onPressed} />
+        <BasicButton
+          borderRadius={25}
+          text={title}
+          onPressed={onPressed}
+          enable={enable}
+        />
       </View>
     </View>
   );

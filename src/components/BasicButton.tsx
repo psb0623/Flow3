@@ -8,6 +8,7 @@ type Props = {
   onPressed: (...args: any[]) => void;
   borderRadius: number;
   children?: any;
+  enable: boolean;
 };
 
 export const BasicButton = ({
@@ -15,6 +16,7 @@ export const BasicButton = ({
   onPressed,
   borderRadius,
   children,
+  enable,
 }: Props) => {
   return (
     <View style={styles.centeredView}>
@@ -25,6 +27,7 @@ export const BasicButton = ({
             borderRadius,
           },
         ]}
+        disabled={!enable}
         onPress={onPressed}>
         <Text style={styles.textStyle}>{text}</Text>
       </Pressable>
@@ -34,6 +37,7 @@ export const BasicButton = ({
 
 BasicButton.defaultProps = {
   borderRadius: 20,
+  enable: true,
 };
 
 const styles = StyleSheet.create({

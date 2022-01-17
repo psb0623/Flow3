@@ -34,9 +34,8 @@ export const StageSelect = ({navigation}: Props) => {
     <View style={styles.container}>
       <View style={styles.titleContainer}>
         <View style={styles.title}>
-          <Text style={styles.titleText}>Pattern</Text>
           <View style={styles.patternContainer}>
-            <Pattern></Pattern>
+            <Pattern />
           </View>
         </View>
       </View>

@@ -2,7 +2,6 @@
 import * as React from 'react';
 import {FlatList, Text, View} from 'react-native';
 import {useCallback, useEffect, useState} from 'react';
-import {GameType} from '../StageGame/GameType';
 import {patternService} from '../../../api';
 import {PublicPatternCard} from './PublicPatternCard';
 import {PublicGameStackNavigationProp} from '../../stack/PublicGameStack';
@@ -10,14 +9,8 @@ import {PublicGameStackNavigationProp} from '../../stack/PublicGameStack';
 type Props = {} & PublicGameStackNavigationProp;
 
 export interface IPattern {
-  gameType: GameType;
   id: string;
   answer: string;
-  solvedNum: string;
-  createdAt: string;
-  writer: string;
-  solve: boolean;
-  solvedAt: string;
 }
 
 export const SharePattern = ({navigation}: Props) => {

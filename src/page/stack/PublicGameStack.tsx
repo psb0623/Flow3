@@ -39,7 +39,7 @@ export const PublicGameStack = () => {
         component={SharePatternScene}
         options={({route}) => {
           return {
-            title: `${route.params.pattern.writer}의 게임`,
+            headerShown: false,
           };
         }}
       />
