@@ -21,6 +21,12 @@
       "bundleIdentifier": "com.example.android"
     },
     "android": {
+      "googleServicesFile":"./src/components/google-services.json",
+      "config":{
+        "googleSignIn":{
+          "certificateHash" :"24b740e0f3007484f6857b5a0adc33a4da846179"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

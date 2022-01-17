@@ -22,6 +22,7 @@ import Svg, {Path, Defs, Marker} from 'react-native-svg';
 import {Point} from './Point';
 import {GestureEvent} from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon';
 import {hintRepository} from '../../../repository/HintRepository';
+import {connectSound} from '../../../audio/ConnectSound';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -332,6 +333,7 @@ export function Pattern(props: PropsType) {
                         selectAnim[i * props.rowCount + j].value =
                           withSpring(2);
                         connectAnim[selectedIndexes.value.length - 1].value = 1;
+                        runOnJS(connectSound)(idx, props.rowCount);
                         connectAnim[selectedIndexes.value.length - 1].value =
                           withSpring(0);
                       }
@@ -351,6 +353,7 @@ export function Pattern(props: PropsType) {
                 //testAnim.value = 1;
                 //testAnim.value = withSpring(0);
                 connectAnim[selectedIndexes.value.length - 1].value = 1;
+                runOnJS(connectSound)(idx, props.rowCount);
                 connectAnim[selectedIndexes.value.length - 1].value =
                   withSpring(0);
                 runOnJS(Vibration.vibrate)(10);
@@ -382,6 +385,7 @@ export function Pattern(props: PropsType) {
               selected.push(idx);
               normPath.push(idx);
               selectAnim[idx].value = withSpring(2);
+              runOnJS(connectSound)(idx, props.rowCount);
               runOnJS(Vibration.vibrate)(10);
               runOnJS(fadeIn)();
               return false;
