@@ -1,0 +1,24 @@
+{
+  "stage": [{
+    "gameType": "Three",
+    "id": "0",
+    "answer" : "01234",
+    "solved" : "0",
+    "createdAt" : "now",
+    "writer" : "진성호"
+  }, {
+    "gameType": "Three",
+    "id": "0",
+    "answer" : "01234",
+    "solved" : "0",
+    "createdAt" : "now",
+    "writer" : "진성호"
+  }, {
+    "gameType": "Three",
+    "id": "0",
+    "answer" : "01234",
+    "solved" : "0",
+    "createdAt" : "now",
+    "writer" : "진성호"
+  }]
+}
