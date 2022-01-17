@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1094569404009",
+    "project_id": "patternize-1642320697379",
+    "storage_bucket": "patternize-1642320697379.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094569404009:android:17cfb5c02bbd210d4864f8",
+        "android_client_info": {
+          "package_name": "com.example.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094569404009-jfktu8gta8kb4rpfl2rjq5r9sdkk5rao.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android",
+            "certificate_hash": "24b740e0f3007484f6857b5a0adc33a4da846179"
+          }
+        },
+        {
+          "client_id": "1094569404009-70erklir67ufl9cl8p920apiugm5meaj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCB6aQPogJrz3-8Xm6-hGDreX0RjndNGz4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094569404009-70erklir67ufl9cl8p920apiugm5meaj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
