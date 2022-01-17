@@ -101,6 +101,7 @@ export function Pattern(props: PropsType) {
 
   const lineWidthAnim = useRef(new Animated.Value(3)).current;
   const hintAnim = useRef(new Animated.Value(0)).current;
+  const hintOpAnim = useRef(new Animated.Value(0)).current;
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -185,6 +186,14 @@ export function Pattern(props: PropsType) {
         duration: 1000000000,
         easing: EasingNode.linear,
       }).start();
+
+      Animated.timing(hintOpAnim, {
+        toValue: 1,
+        duration: 500,
+        easing: EasingNode.linear,
+      }).start();
+    } else {
+      hintOpAnim.setValue(0);
     }
   }, [props.hint]);
 
@@ -498,7 +507,7 @@ export function Pattern(props: PropsType) {
                 stroke={props.activeColor}
                 strokeDasharray="10,10"
                 strokeDashoffset={hintAnim}
-                opacity={1}
+                opacity={hintOpAnim}
               />
             </Svg>
             <Svg style={styles.svg} width="100%" height="100%">
