@@ -16,4 +16,20 @@ export class PublicPatternService {
       })}`,
     );
   };
+
+  public solvePublicPattern = async (
+    patternId: string,
+  ): Promise<AxiosResponse<void>> => {
+    return this.request.post(`/public/me/stage`, {
+      patternId,
+    });
+  };
+
+  public createPublicPattern = async (
+    answer: string,
+  ): Promise<AxiosResponse<void>> => {
+    return this.request.post(`public/stage`, {
+      answer: answer,
+    });
+  };
 }

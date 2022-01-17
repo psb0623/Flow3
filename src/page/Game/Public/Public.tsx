@@ -3,6 +3,7 @@ import {StyleSheet, Image} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {SharePattern} from './SharePattern';
 import {CreatePattern} from './CreatePattern';
+import {PublicGameStack} from '../../stack/PublicGameStack';
 
 type PatternTabType = {
   CreatePattern: undefined;
@@ -47,7 +48,7 @@ export const PublicTab = () => {
       })}>
       <Tab.Screen
         name={'SharePattern'}
-        component={SharePattern}
+        component={PublicGameStack}
         options={{
           title: 'RECENT  ',
         }}

@@ -13,9 +13,9 @@ export const Login = ({navigation}: Props) => {
 
   const login = useCallback(() => {
     (async () => {
+      navigation.navigate('Main');
       await authService.login(nickname);
       setNickname('');
-      navigation.navigate('Main');
     })();
   }, [nickname]);
 

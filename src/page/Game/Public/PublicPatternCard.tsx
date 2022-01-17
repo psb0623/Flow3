@@ -7,9 +7,11 @@ import {StyleSheet, View, Text, Pressable} from 'react-native';
 
 type Props = {
   pattern: IPattern;
+  onPressed: (...args: any[]) => void;
 };
 export const PublicPatternCard = ({
   pattern: {answer, writer, solve, solvedAt, createdAt, solvedNum},
+  onPressed,
 }: Props) => {
   return (
     <View
@@ -17,7 +19,7 @@ export const PublicPatternCard = ({
         width: '100%',
         padding: 10,
       }}>
-      <Pressable onPress={() => {}}>
+      <Pressable onPress={onPressed}>
         <View
           style={{
             width: '100%',

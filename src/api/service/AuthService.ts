@@ -1,6 +1,4 @@
-import {AxiosInstance, AxiosResponse} from 'axios';
-import {IPattern} from '../../page/Game/Public/SharePattern';
-import * as queryString from 'query-string';
+import {AxiosInstance} from 'axios';
 
 export class AuthService {
   constructor(private request: AxiosInstance) {}
