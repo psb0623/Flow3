@@ -9,7 +9,7 @@
     "eject": "expo eject",
     "lint": "eslint './src/**/*.{ts,tsx,js,jsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx,js,jsx}'",
-    "start:mock": "json-server -r ./mock/routes.json  -w ./mock/stage.json ./mock/public.json"
+    "start:mock": "json-server -r ./mock/routes.json  -w ./mock/stage.json"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.15.0",

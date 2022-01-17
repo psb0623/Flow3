@@ -3,6 +3,7 @@ import {AppStack} from './src/page/stack/AppStack';
 import {useEffect, useState} from 'react';
 import {Splash} from './src/page/Splash/Splash';
 import {backgroundMusic} from './src/audio/BackGroundSound';
+import {Login} from './src/page/Login/Login';
 
 export default function App() {
   backgroundMusic();

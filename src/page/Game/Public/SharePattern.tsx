@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {Text, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 import {useEffect, useState} from 'react';
 import {GameType} from '../StageGame/GameType';
 import {patternService} from '../../../api';
@@ -10,29 +10,44 @@ type Props = {};
 
 export interface IPattern {
   gameType: GameType;
-  id: number;
+  id: string;
   answer: string;
-  solved: number;
+  solvedNum: string;
   createdAt: string;
   writer: string;
+  solve: boolean;
+  solvedAt: string;
 }
 
 export const SharePattern = (props: Props) => {
   const [pageNum, setPageNum] = useState(1);
-  const [patterns, setPatterns] = useState<IPattern[]>();
+  const [patterns, setPatterns] = useState<IPattern[]>([]);
 
   useEffect(() => {
     (async () => {
       const _patterns = (await patternService.getPatternPage(pageNum, 5)).data;
-      setPatterns((patterns) => patterns?.concat(patterns));
+      console.log(_patterns);
+      setPatterns((patterns) => patterns?.concat(_patterns));
     })();
   }, [pageNum]);
 
   return (
     <View>
-      {patterns?.map((pattern) => {
-        return <PublicPatternCard pattern={pattern}></PublicPatternCard>;
-      })}
+      <FlatList
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+        data={patterns}
+        renderItem={(pattern) => {
+          return (
+            <PublicPatternCard key={pattern.item.id} pattern={pattern.item} />
+          );
+        }}
+        keyExtractor={(item) => {
+          return item.id;
+        }}
+      />
     </View>
   );
 };

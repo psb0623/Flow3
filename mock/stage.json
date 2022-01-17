@@ -13,5 +13,33 @@
   "stage4" : [
     {"id" : 1, "answer" : "0123456789ABCDEF" },
     {"id" : 2, "answer" : "0123456789ABCDEF" }
-  ]
+  ],
+  "stage": [{
+    "gameType": "Three",
+    "id": "0",
+    "answer" : "01234",
+    "solvedNum" : "0",
+    "createdAt" : "now",
+    "solvedAt" : null,
+    "writer" : "진성호",
+    "solve" : true
+  }, {
+    "gameType": "Three",
+    "id": "1",
+    "answer" : "01234",
+    "solvedNum" : "0",
+    "createdAt" : "now",
+    "writer" : "진성호",
+    "solvedAt" : "now",
+    "solve" : true
+  }, {
+    "gameType": "Three",
+    "id": "2",
+    "answer" : "01234",
+    "solvedNum" : "0",
+    "createdAt" : "now",
+    "writer" : "진성호",
+    "solvedAt" : null,
+    "solve" : false
+  } ]
 }

@@ -10,7 +10,7 @@ export class PublicPatternService {
     size: number,
   ): Promise<AxiosResponse<Array<IPattern>>> => {
     return this.request.get(
-      `/pattern?${queryString.stringify({
+      `/public/stage?${queryString.stringify({
         page,
         size,
       })}`,
