@@ -7,9 +7,15 @@ type Props = {
   text: string;
   onPressed: (...args: any[]) => void;
   borderRadius: number;
+  children?: any;
 };
 
-export const BasicButton = ({text, onPressed, borderRadius}: Props) => {
+export const BasicButton = ({
+  text,
+  onPressed,
+  borderRadius,
+  children,
+}: Props) => {
   return (
     <View style={styles.centeredView}>
       <Pressable

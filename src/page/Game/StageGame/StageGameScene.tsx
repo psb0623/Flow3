@@ -8,7 +8,8 @@ import {stageService} from '../../../api';
 import {Stage} from './Stage';
 import {PatternModule} from '../PatternModule/PatternModule';
 import {normalize} from '../Pattern/Pattern';
-import {StyleSheet, View} from 'react-native';
+import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
+import {BasicButton} from '../../../components/BasicButton';
 
 type Props = StageGameStackNavigationProp &
   StageGameStackRouteProp<'StageGameScene'>;
@@ -87,33 +88,51 @@ export const StageGameScene = ({
 
   return (
     selectedIndices && (
-      <View
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <View style={styles.patternRendererContainer}>
-          <View
-            style={[
-              styles.patternRendererLayout,
-              {
-                width: gameType === 'Three' ? '80%' : '100%',
-              },
-            ]}>
-            <PatternModule
-              row={gameType === 'Three' ? 3 : 4}
-              column={gameType === 'Three' ? 3 : 4}
-              answerIndices={selectedIndices}
-              onSuccess={() => {
-                goNextGameStage(gameStageNumber + 1);
-              }}
-            />
+      <>
+        <Pressable
+          style={[
+            styles.button,
+            {
+              borderRadius: 25,
+              display: 'flex',
+              flexDirection: 'row',
+              margin: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 60,
+            },
+          ]}>
+          <Image source={require('./eletronic.png')} />
+          <Text style={styles.textStyle}>3</Text>
+        </Pressable>
+        <View
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <View style={styles.patternRendererContainer}>
+            <View
+              style={[
+                styles.patternRendererLayout,
+                {
+                  width: gameType === 'Three' ? '80%' : '100%',
+                },
+              ]}>
+              <PatternModule
+                row={gameType === 'Three' ? 3 : 4}
+                column={gameType === 'Three' ? 3 : 4}
+                answerIndices={selectedIndices}
+                onSuccess={() => {
+                  goNextGameStage(gameStageNumber + 1);
+                }}
+              />
+            </View>
           </View>
         </View>
-      </View>
+      </>
     )
   );
 };
@@ -132,5 +151,18 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  hintLayout: {
+    margin: 10,
+  },
+  button: {
+    padding: 10,
+    elevation: 2,
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
