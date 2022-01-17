@@ -22,7 +22,6 @@ export const DailyPattern = ({navigation}: Props) => {
   const [daily, setDaily] = useState(Date.now());
   const isFocused = useIsFocused();
   const [canSolve, setCanSolve] = useState(true);
-  const [modal, setModal] = useState(false);
   const [canSolvedDateLower, setCanSolvedDateLower] = useState<number>(
     Date.now(),
   );
@@ -31,38 +30,34 @@ export const DailyPattern = ({navigation}: Props) => {
     (async () => {
       await hintRepository.plusHintCount();
       setDaily(await dailyRepository.setSolvedAt(Date.now()));
-      setModal(true);
     })();
   }, []);
 
   const onSuccessModalPressed = useCallback(() => {
     (async () => {
       navigation.navigate('StageGameStack');
-      setModal(false);
+      setCanSolve(true);
+      initialPattern.current = new PatternRandomGenerator().generate();
     })();
   }, []);
 
   useLayoutEffect(() => {
     (async () => {
-      setDaily(await dailyRepository.getSolvedAt());
+      const _daily = await dailyRepository.getSolvedAt();
+      const _currentDate = new Date(_daily);
+      const _canSolvedDateLower = _currentDate.setSeconds(
+        _currentDate.getSeconds() + 30,
+      );
+
+      setCanSolvedDateLower(_canSolvedDateLower);
+      setDaily(_daily);
+      if (_canSolvedDateLower <= Date.now()) {
+        setCanSolve(true);
+      } else {
+        setCanSolve(false);
+      }
     })();
-  });
-
-  useLayoutEffect(() => {
-    const currentDate = new Date(daily);
-    setCanSolvedDateLower(
-      currentDate.setSeconds(currentDate.getSeconds() + 30),
-    );
-  }, [daily]);
-
-  useLayoutEffect(() => {
-    if (canSolvedDateLower <= Date.now()) {
-      setCanSolve(true);
-    } else {
-      setCanSolve(false);
-      setModal(true);
-    }
-  }, [canSolvedDateLower, isFocused]);
+  }, [isFocused, daily]);
 
   return (
     <SafeAreaView
