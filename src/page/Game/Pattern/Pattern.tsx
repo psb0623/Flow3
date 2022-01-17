@@ -93,6 +93,10 @@ export function Pattern(props: PropsType) {
 
   const testAnim = useSharedValue<number>(1);
 
+  const connectAnim = Array(props.rowCount * props.columnCount + 10)
+    .fill(0)
+    .map((_, idx) => useSharedValue<number>(1));
+
   const lineWidthAnim = useRef(new Animated.Value(3)).current;
 
   const fadeIn = () => {
@@ -310,9 +314,12 @@ export function Pattern(props: PropsType) {
                 selectedIndexes.value = [...selectedIndexes.value, idx];
                 normalizedPath.value = [...normalizedPath.value, idx];
                 selectAnim[idx].value = withSpring(2);
-                cancelAnimation(testAnim);
-                testAnim.value = 1;
-                testAnim.value = withSpring(0);
+                //cancelAnimation(testAnim);
+                //testAnim.value = 1;
+                //testAnim.value = withSpring(0);
+                connectAnim[selectedIndexes.value.length - 1].value = 1;
+                connectAnim[selectedIndexes.value.length - 1].value =
+                  withSpring(0);
                 runOnJS(Vibration.vibrate)(10);
               }
               return false;
@@ -370,7 +377,7 @@ export function Pattern(props: PropsType) {
         if (!d) {
           d += ' M';
           d += ` ${patternPoints?.value[pos].x},${patternPoints.value[pos].y}`;
-        } else if (idx == selectedIndexes.value.length - 1) {
+        } else {
           let mx =
             (patternPoints?.value[pos].x +
               patternPoints?.value[selectedIndexes.value[idx - 1]].x) /
@@ -391,14 +398,13 @@ export function Pattern(props: PropsType) {
           let ndx = dx / Math.sqrt(dx * dx + dy * dy);
           let ndy = dy / Math.sqrt(dx * dx + dy * dy);
 
-          let vx = mx - 20 * ndy * testAnim.value;
-          let vy = my + 20 * ndx * testAnim.value;
+          let vx =
+            mx - 20 * ndy * connectAnim[idx].value * (idx % 2 === 0 ? 1 : -1);
+          let vy =
+            my + 20 * ndx * connectAnim[idx].value * (idx % 2 === 0 ? 1 : -1);
 
           d += ' Q';
           d += ` ${vx},${vy}, ${patternPoints?.value[pos].x},${patternPoints.value[pos].y}`;
-        } else {
-          d += ' L';
-          d += ` ${patternPoints?.value[pos].x},${patternPoints.value[pos].y}`;
         }
         //d += !d ? ' M' : ' L';
         //d += ` ${patternPoints?.value[idx].x},${patternPoints.value[idx].y}`;

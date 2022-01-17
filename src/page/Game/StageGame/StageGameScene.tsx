@@ -8,6 +8,7 @@ import {stageService} from '../../../api';
 import {Stage} from './Stage';
 import {PatternModule} from '../PatternModule/PatternModule';
 import {normalize} from '../Pattern/Pattern';
+import {StyleSheet, View} from 'react-native';
 
 type Props = StageGameStackNavigationProp &
   StageGameStackRouteProp<'StageGameScene'>;
@@ -86,14 +87,50 @@ export const StageGameScene = ({
 
   return (
     selectedIndices && (
-      <PatternModule
-        row={gameType === 'Three' ? 3 : 4}
-        column={gameType === 'Three' ? 3 : 4}
-        answerIndices={selectedIndices}
-        onSuccess={() => {
-          goNextGameStage(gameStageNumber + 1);
-        }}
-      />
+      <View
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <View style={styles.patternRendererContainer}>
+          <View
+            style={[
+              styles.patternRendererLayout,
+              {
+                width: gameType === 'Three' ? '80%' : '100%',
+              },
+            ]}>
+            <PatternModule
+              row={gameType === 'Three' ? 3 : 4}
+              column={gameType === 'Three' ? 3 : 4}
+              answerIndices={selectedIndices}
+              onSuccess={() => {
+                goNextGameStage(gameStageNumber + 1);
+              }}
+            />
+          </View>
+        </View>
+      </View>
     )
   );
 };
+
+const styles = StyleSheet.create({
+  patternRendererLayout: {
+    width: '80%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  patternRendererContainer: {
+    width: '100%',
+    height: '80%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
