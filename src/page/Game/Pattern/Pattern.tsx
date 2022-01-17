@@ -240,10 +240,11 @@ export function Pattern(props: PropsType) {
         setIsError(false);
         setSuccess(true);
 
+        props.onSuccess();
+
         setTimeout(() => {
           lineSmall();
           unselect();
-          props.onSuccess();
           selectedIndexes.value = [];
           setSuccess(false);
           canTouch.value = true;

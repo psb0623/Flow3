@@ -1,57 +1,37 @@
 // @flow
 import * as React from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useRef, useState} from 'react';
 import {PatternModule} from '../PatternModule/PatternModule';
 import {PatternRandomGenerator} from '../PatternRandomGenerator';
 import {ChallengeGameStackNavigationProp} from '../../stack/ChallengeGameStack';
 import {Modal} from 'react-native';
-import {ProgressBar} from 'react-native-paper';
+import {useCountDown} from '../../../hook/useCountDown';
 
-const timeReduceRatio = 0.95;
+const timeReduceRatio = 0.97;
 
 type Props = {} & ChallengeGameStackNavigationProp;
+
 export const SpeedRun = ({navigation}: Props) => {
   const patternGenerator = useRef(new PatternRandomGenerator(3, 3));
   const [maxSecond, setMaxSecond] = useState<number>(10);
-  const timeStarted = useRef(Date.now());
-  const [duration, setDuration] = useState<number>();
   const [answerCount, setAnswerCount] = useState<number>(0);
   const [answerIndices, setAnswerIndices] = useState<number[]>(
     patternGenerator.current.generate(),
   );
-  const [progress, setProgress] = useState(1);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const interval = useRef<any>();
+  const onCountDown = useCallback(() => {
+    setModalVisible(true);
+  }, []);
 
-  useEffect(() => {
-    if (duration == null) {
-      setProgress(1);
-    } else {
-      setProgress(duration / (maxSecond * 1000));
-    }
-  }, [maxSecond, duration]);
-
-  useEffect(() => {
-    interval.current = setInterval(() => {
-      const leftTime = timeStarted.current + maxSecond * 1000 - Date.now();
-      if (leftTime < 0) {
-        setDuration(0);
-        clearInterval(interval.current);
-        setModalVisible(true);
-      } else {
-        setDuration(leftTime);
-      }
-    }, 500);
-
-    return () => {
-      clearInterval(interval.current);
-    };
-  }, [timeStarted.current]);
+  const {countDownElement, countDownInit} = useCountDown(
+    maxSecond,
+    onCountDown,
+  );
 
   return (
     <View style={styles.container}>
-      <ProgressBar progress={progress} color="#49B5F2" />
+      {countDownElement}
       <View style={styles.header}>
         <View style={styles.countLayout}>
           <Text style={styles.count}>{answerCount}</Text>
@@ -64,24 +44,15 @@ export const SpeedRun = ({navigation}: Props) => {
             onSuccess={() => {
               if (!modalVisible) {
                 setMaxSecond(Math.max(maxSecond * timeReduceRatio, 2));
-                timeStarted.current = Date.now();
                 setAnswerIndices(patternGenerator.current.generate());
                 setAnswerCount((count) => (count as number) + 1);
+                countDownInit(Math.max(maxSecond * timeReduceRatio, 2));
               }
             }}
           />
         </View>
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onShow={() => {
-          clearInterval(interval.current);
-        }}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
+      <Modal animationType="slide" transparent={false} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Answer : {answerCount}</Text>
@@ -139,7 +110,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   centeredView: {
-    flex: 1,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
