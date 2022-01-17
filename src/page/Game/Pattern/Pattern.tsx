@@ -18,7 +18,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, {Path} from 'react-native-svg';
+import Svg, {Path, Defs, Marker} from 'react-native-svg';
 import {Point} from './Point';
 import {GestureEvent} from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon';
 
@@ -35,6 +35,8 @@ interface PropsType {
   onCheck?: (res: string) => boolean;
   onSuccess: () => void;
   successColor: string;
+  hint: boolean;
+  answerIndices: Array<number>;
 }
 
 export const normalize = (
@@ -98,7 +100,8 @@ export function Pattern(props: PropsType) {
     .map((_, idx) => useSharedValue<number>(1));
 
   const lineWidthAnim = useRef(new Animated.Value(3)).current;
-
+  const hintAnim = useRef(new Animated.Value(0)).current;
+  const hintOpAnim = useRef(new Animated.Value(0)).current;
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -174,6 +177,26 @@ export function Pattern(props: PropsType) {
   const msgStyle = useAnimatedStyle(() => {
     return {transform: [{translateX: msgX.value}]};
   });
+
+  useEffect(() => {
+    if (props.hint) {
+      console.log('hint use');
+      Animated.timing(hintAnim, {
+        toValue: -50000000,
+        duration: 1000000000,
+        easing: EasingNode.linear,
+      }).start();
+
+      Animated.timing(hintOpAnim, {
+        toValue: 1,
+        duration: 500,
+        easing: EasingNode.linear,
+      }).start();
+    } else {
+      hintOpAnim.setValue(0);
+    }
+  }, [props.hint]);
+
   const onContainerLayout = ({
     nativeEvent: {
       layout: {x, y, width, height},
@@ -301,6 +324,9 @@ export function Pattern(props: PropsType) {
                         ];
                         selectAnim[i * props.rowCount + j].value =
                           withSpring(2);
+                        connectAnim[selectedIndexes.value.length - 1].value = 1;
+                        connectAnim[selectedIndexes.value.length - 1].value =
+                          withSpring(0);
                       }
                       normalizedPath.value = [
                         ...normalizedPath.value,
@@ -370,6 +396,16 @@ export function Pattern(props: PropsType) {
         }
       },
     });
+  const animatedHintProps = useAnimatedProps(() => {
+    let d = '';
+    if (props.hint && patternPoints.value != null) {
+      let s = props.answerIndices[0];
+      let e = props.answerIndices[1];
+      d = `M  ${patternPoints?.value[s].x},${patternPoints.value[s].y}`;
+      d += ` L ${patternPoints?.value[e].x},${patternPoints.value[e].y}`;
+    } else d = 'M -1,-1';
+    return {d};
+  });
   const animatedProps = useAnimatedProps(() => {
     let d = '';
     selectedIndexes.value.forEach((pos, idx) => {
@@ -466,6 +502,18 @@ export function Pattern(props: PropsType) {
               <AnimatedPath
                 fill="none"
                 strokeLinejoin="round"
+                strokeWidth={3}
+                animatedProps={animatedHintProps}
+                stroke={props.activeColor}
+                strokeDasharray="10,10"
+                strokeDashoffset={hintAnim}
+                opacity={hintOpAnim}
+              />
+            </Svg>
+            <Svg style={styles.svg} width="100%" height="100%">
+              <AnimatedPath
+                fill="none"
+                strokeLinejoin="round"
                 strokeWidth={lineWidthAnim}
                 animatedProps={animatedProps}
                 stroke={
@@ -496,6 +544,7 @@ Pattern.defaultProps = {
   successColor: 'green',
   onCheck: () => false,
   onSuccess: () => {},
+  answerIndices: [],
 };
 
 const styles = StyleSheet.create({

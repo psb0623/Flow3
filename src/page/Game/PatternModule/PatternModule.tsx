@@ -10,12 +10,14 @@ type Props = {
   onSuccess: () => void;
   row: number;
   column: number;
+  hint: boolean;
 };
 export const PatternModule = ({
   answerIndices,
   onSuccess,
   row,
   column,
+  hint,
 }: Props) => {
   const onCheck = useCallback(
     (res: string) => {
@@ -48,6 +50,8 @@ export const PatternModule = ({
           errorColor={'#D93609'}
           //patternMargin={25}
           inactiveColor={'#8E91A8'}
+          hint={hint}
+          answerIndices={answerIndices}
         />
       </View>
     </SafeAreaView>

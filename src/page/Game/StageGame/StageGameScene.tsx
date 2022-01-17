@@ -25,6 +25,8 @@ export const StageGameScene = ({
     null,
   );
 
+  const [hint, setHint] = useState<boolean>(false);
+
   const goNextGameStage = useCallback((gameStageNumber) => {
     navigation.navigate('StageGameScene', {
       gameStageNumber: gameStageNumber,
@@ -90,6 +92,7 @@ export const StageGameScene = ({
     selectedIndices && (
       <>
         <Pressable
+          onPress={() => setHint(true)}
           style={[
             styles.button,
             {
@@ -99,16 +102,20 @@ export const StageGameScene = ({
               margin: 10,
               alignItems: 'center',
               justifyContent: 'center',
-              width: 60,
+              width: 65,
             },
           ]}>
-          <Image source={require('./eletronic.png')} />
-          <Text style={styles.textStyle}>3</Text>
+          <Image
+            source={require('./eletronic.png')}
+            style={{width: 20, height: 20}}
+          />
+          <Text style={styles.textStyle}> </Text>
+          <Text style={styles.textStyle}>5</Text>
         </Pressable>
         <View
           style={{
             width: '100%',
-            height: '100%',
+            height: '90%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -127,7 +134,9 @@ export const StageGameScene = ({
                 answerIndices={selectedIndices}
                 onSuccess={() => {
                   goNextGameStage(gameStageNumber + 1);
+                  setHint(false);
                 }}
+                hint={hint}
               />
             </View>
           </View>
