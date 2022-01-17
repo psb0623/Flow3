@@ -11,9 +11,10 @@ const alphabetGeneratorFactory = function* (alphabet: Array<number>) {
   }
 };
 
-const patternGenerator = function* () {
+export const splashGenerator = function* () {
   yield alphabetGeneratorFactory(_p);
   yield alphabetGeneratorFactory(_a);
+  yield alphabetGeneratorFactory(_t);
   yield alphabetGeneratorFactory(_t);
   yield alphabetGeneratorFactory(_e);
   yield alphabetGeneratorFactory(_r);

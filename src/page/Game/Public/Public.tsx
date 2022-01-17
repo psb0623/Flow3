@@ -49,7 +49,7 @@ export const PublicTab = () => {
         name={'SharePattern'}
         component={SharePattern}
         options={{
-          title: 'RECENT',
+          title: 'RECENT  ',
         }}
       />
       <Tab.Screen
