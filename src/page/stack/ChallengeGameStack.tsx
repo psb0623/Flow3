@@ -5,11 +5,14 @@ import {
 import {Arcade} from '../Game/ChallengeGame/Arcade';
 import {SpeedRun} from '../Game/ChallengeGame/SpeedRun';
 import {ChallengeGameSelect} from '../Game/ChallengeGame/ChallengeGameSelect';
+import {SpeedRunDifficulty} from '../Game/ChallengeGame/SpeedRunDifficulty';
 
 export type ChallengeGameStackType = {
   ChallengeGameSelect: undefined;
   Arcade: undefined;
-  SpeedRun: undefined;
+  SpeedRun: {
+    difficulty: SpeedRunDifficulty;
+  };
 };
 
 export type ChallengeGameTypes = keyof ChallengeGameStackType;
@@ -47,8 +50,25 @@ export const ChallengeGameStack = () => {
       <_ChallengeGameStack.Screen
         name={'SpeedRun'}
         component={SpeedRun}
-        options={{
-          title: '스피드런',
+        options={(router) => {
+          if (router.route.params.difficulty === 'High') {
+            return {
+              title: 'SpeedRun - High',
+            };
+          }
+
+          if (router.route.params.difficulty === 'Intermediate') {
+            return {
+              title: 'SpeedRun - Intermediate',
+            };
+          }
+
+          if (router.route.params.difficulty === 'Low') {
+            return {
+              title: 'SpeedRun - Low',
+            };
+          }
+          return {};
         }}
       />
     </_ChallengeGameStack.Navigator>

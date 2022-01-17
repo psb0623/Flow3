@@ -4,15 +4,26 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useCallback, useRef, useState} from 'react';
 import {PatternModule} from '../PatternModule/PatternModule';
 import {PatternRandomGenerator} from '../PatternRandomGenerator';
-import {ChallengeGameStackNavigationProp} from '../../stack/ChallengeGameStack';
+import {
+  ChallengeGameStackNavigationProp,
+  ChallengeGameStackRouteProp,
+} from '../../stack/ChallengeGameStack';
 import {Modal} from 'react-native';
 import {useCountDown} from '../../../hook/useCountDown';
+import {rankingRepository} from '../../../repository/RankingRepository';
+import {useIsFocused} from '@react-navigation/native';
 
 const timeReduceRatio = 0.97;
 
-type Props = {} & ChallengeGameStackNavigationProp;
+type Props = {} & ChallengeGameStackNavigationProp &
+  ChallengeGameStackRouteProp<'SpeedRun'>;
 
-export const SpeedRun = ({navigation}: Props) => {
+export const SpeedRun = ({
+  navigation,
+  route: {
+    params: {difficulty},
+  },
+}: Props) => {
   const patternGenerator = useRef(new PatternRandomGenerator(3, 3));
   const [maxSecond, setMaxSecond] = useState<number>(10);
   const [answerCount, setAnswerCount] = useState<number>(0);
@@ -21,8 +32,19 @@ export const SpeedRun = ({navigation}: Props) => {
   );
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const onCountDown = useCallback(() => {
+    if (difficulty === 'High') {
+      rankingRepository.setHighRank(answerCount);
+    }
+
+    if (difficulty === 'Low') {
+      rankingRepository.setLowRank(answerCount);
+    }
+
+    if (difficulty === 'Intermediate') {
+      rankingRepository.setIntermediateRank(answerCount);
+    }
     setModalVisible(true);
-  }, []);
+  }, [difficulty, answerCount]);
 
   const {countDownElement, countDownInit} = useCountDown(
     maxSecond,

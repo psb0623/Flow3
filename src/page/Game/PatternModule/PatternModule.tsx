@@ -61,6 +61,7 @@ export const PatternModule = ({
 PatternModule.defaultProps = {
   column: 3,
   row: 3,
+  hint: false,
 };
 
 const styles = StyleSheet.create({

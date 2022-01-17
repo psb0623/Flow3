@@ -3,15 +3,31 @@ import * as React from 'react';
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {BasicButton} from '../../../components/BasicButton';
 import {ChallengeGameStackNavigationProp} from '../../stack/ChallengeGameStack';
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import Animated, {useSharedValue, withSpring} from 'react-native-reanimated';
 import useLayout from 'react-native-paper/lib/typescript/utils/useLayout';
+import {SpeedRunDifficulty} from './SpeedRunDifficulty';
+import {useIsFocused} from '@react-navigation/native';
+import {rankingRepository} from '../../../repository/RankingRepository';
 
 type Props = {} & ChallengeGameStackNavigationProp;
 
 const diffColor = ['#50E989', 'blue', 'black'];
 
 export const ChallengeGameSelect = ({navigation}: Props) => {
+  const isFocused = useIsFocused();
+  const [highRank, setHighRank] = useState<number>(0);
+  const [lowRank, setLowRank] = useState<number>(0);
+  const [intermediateRank, setIntermediateRank] = useState<number>(0);
+
+  useEffect(() => {
+    (async () => {
+      setIntermediateRank(await rankingRepository.getIntermediateRank());
+      setHighRank(await rankingRepository.getHighRank());
+      setLowRank(await rankingRepository.getLowRank());
+    })();
+  }, [isFocused]);
+
   const top3 = [
     [200, 150, 100],
     [100, 70, 30],
@@ -20,9 +36,12 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
 
   const [top3Diff, setTop3Diff] = useState<number>(0);
 
-  const goSpeedRun = useCallback(() => {
-    navigation.navigate('SpeedRun');
+  const goSpeedRun = useCallback((difficulty: SpeedRunDifficulty) => {
+    navigation.navigate('SpeedRun', {
+      difficulty,
+    });
   }, []);
+
   const graphAnim = Array(3)
     .fill(null)
     .map((_) => useRef(new Animated.Value(0)).current);
@@ -107,35 +126,47 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
         <View
           style={[styles.difficultyLayout, {backgroundColor: diffColor[0]}]}>
           <Text style={styles.textStyle}>초급 </Text>
-          <Text style={styles.rankTextStyle}>72점 </Text>
+          <Text style={styles.rankTextStyle}>{lowRank}점 </Text>
           <View style={styles.buttonLayout}>
-            <BasicButton onPressed={goSpeedRun} text={'순위표'}></BasicButton>
+            <BasicButton onPressed={() => {}} text={'순위표'}></BasicButton>
           </View>
           <View style={styles.buttonLayout}>
-            <BasicButton onPressed={goSpeedRun} text={'도전!'}></BasicButton>
+            <BasicButton
+              onPressed={() => {
+                goSpeedRun('Low');
+              }}
+              text={'도전!'}></BasicButton>
           </View>
         </View>
         <View
           style={[styles.difficultyLayout, {backgroundColor: diffColor[1]}]}>
           <Text style={styles.textStyle}>중급 </Text>
-          <Text style={styles.rankTextStyle}>-점 </Text>
+          <Text style={styles.rankTextStyle}>{intermediateRank}점 </Text>
           <View style={styles.buttonLayout}>
-            <BasicButton onPressed={goSpeedRun} text={'순위표'}></BasicButton>
+            <BasicButton onPressed={() => {}} text={'순위표'}></BasicButton>
           </View>
           <View style={styles.buttonLayout}>
-            <BasicButton onPressed={goSpeedRun} text={'도전!'}></BasicButton>
+            <BasicButton
+              onPressed={() => {
+                goSpeedRun('Intermediate');
+              }}
+              text={'도전!'}></BasicButton>
           </View>
         </View>
 
         <View
           style={[styles.difficultyLayout, {backgroundColor: diffColor[2]}]}>
           <Text style={styles.textStyle}>고급 </Text>
-          <Text style={styles.rankTextStyle}>-점 </Text>
+          <Text style={styles.rankTextStyle}>{highRank}점 </Text>
           <View style={styles.buttonLayout}>
-            <BasicButton onPressed={goSpeedRun} text={'순위표'}></BasicButton>
+            <BasicButton onPressed={() => {}} text={'순위표'}></BasicButton>
           </View>
           <View style={styles.buttonLayout}>
-            <BasicButton onPressed={goSpeedRun} text={'도전!'}></BasicButton>
+            <BasicButton
+              onPressed={() => {
+                goSpeedRun('High');
+              }}
+              text={'도전!'}></BasicButton>
           </View>
         </View>
       </View>
