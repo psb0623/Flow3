@@ -1,22 +1,20 @@
-import * as React from "react";
-import { AppStack } from "./src/page/stack/AppStack";
-import {useEffect, useState} from "react";
-import {Splash} from "./src/page/Splash";
-import { View } from "react-native";
-import { backgroundMusic } from "./src/audio/BackGroundSound";
+import * as React from 'react';
+import {AppStack} from './src/page/stack/AppStack';
+import {useEffect, useState} from 'react';
+import {Splash} from './src/page/Splash';
+import {View} from 'react-native';
+import {backgroundMusic} from './src/audio/BackGroundSound';
 
 export default function App() {
   backgroundMusic();
 
-  const [load, setLoad] = useState<Boolean>(false)
+  const [load, setLoad] = useState<Boolean>(false);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoad(true)
-    }, 1000)
-  }, [setLoad])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoad(true)
+  //   }, 1000)
+  // }, [setLoad])
 
-  return (
-        !load ? <Splash/>: <AppStack/>
-  );
-};
+  return !load ? <Splash /> : <AppStack />;
+}

@@ -5,11 +5,12 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Achieve} from '../Achieve';
 import {StageGameStack} from '../stack/StageGameStack';
 import {ChallengeGameStack} from '../stack/ChallengeGameStack';
+import {PublicTab} from '../Game/Public/Public';
 
 type MainTabType = {
   StageGameStack: undefined;
   ChallengeGame: undefined;
-  Achieve: undefined;
+  Public: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabType>();
@@ -44,10 +45,10 @@ export const Main = () => {
             );
           }
 
-          if (route.name == 'Achieve') {
+          if (route.name == 'Public') {
             return (
               <Image
-                source={require('./img/achievement.png')}
+                source={require('./img/internet.png')}
                 style={{
                   width: size,
                   height: size,
@@ -74,21 +75,11 @@ export const Main = () => {
           title: '도전 모드',
         }}></Tab.Screen>
       <Tab.Screen
-        name={'Achieve'}
-        component={Achieve}
+        name={'Public'}
+        component={PublicTab}
         options={{
-          title: '업적',
+          title: '공유',
         }}></Tab.Screen>
     </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
