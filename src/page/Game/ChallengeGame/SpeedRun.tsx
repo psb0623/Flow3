@@ -49,6 +49,8 @@ export const SpeedRun = ({navigation}: Props) => {
                 countDownInit(Math.max(maxSecond * timeReduceRatio, 2));
               }
             }}
+            row={3}
+            column={3}
           />
         </View>
       </View>
@@ -72,7 +74,10 @@ export const SpeedRun = ({navigation}: Props) => {
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    width: '100%',
+    height: '100%',
+  },
   timeLayout: {
     display: 'flex',
     alignItems: 'center',
@@ -91,6 +96,7 @@ const styles = StyleSheet.create({
   },
   patternRendererLayout: {
     width: '80%',
+    height: '100%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',

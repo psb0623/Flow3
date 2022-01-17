@@ -494,8 +494,14 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
   },
   svg: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     position: 'absolute',
     left: 0,
     top: 0,
