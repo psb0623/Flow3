@@ -32,6 +32,16 @@ export class HintRepository implements IHintRepository {
     }
   }
 
+  async plusHintCount(): Promise<number> {
+    try {
+      const value = await this.getHintCount();
+      const nextValue = Math.max(value + 1, 0);
+      return await this.setHintCount(nextValue);
+    } catch (e) {
+      return 0;
+    }
+  }
+
   private async setHintCount(hintCount: number): Promise<number> {
     try {
       await AsyncStorage.setItem(
