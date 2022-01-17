@@ -1,7 +1,7 @@
 // @flow
 import * as React from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
-import {useCallback, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {PatternModule} from '../PatternModule/PatternModule';
 import {PatternRandomGenerator} from '../PatternRandomGenerator';
 import {
@@ -11,6 +11,7 @@ import {
 import {Modal} from 'react-native';
 import {useCountDown} from '../../../hook/useCountDown';
 import {rankingRepository} from '../../../repository/RankingRepository';
+import {randomGeneratorService} from '../../../api';
 
 const timeReduceRatio = 0.97;
 
@@ -23,13 +24,30 @@ export const SpeedRun = ({
     params: {difficulty},
   },
 }: Props) => {
-  const patternGenerator = useRef(new PatternRandomGenerator(3, 3));
   const [maxSecond, setMaxSecond] = useState<number>(10);
   const [answerCount, setAnswerCount] = useState<number>(0);
-  const [answerIndices, setAnswerIndices] = useState<number[]>(
-    patternGenerator.current.generate(),
-  );
+  const [answerIndices, setAnswerIndices] = useState<number[] | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      if (difficulty === 'High') {
+        const randomPattern = await randomGeneratorService.getRandomPattern(2);
+        setAnswerIndices(randomPattern.data);
+      }
+
+      if (difficulty === 'Low') {
+        const randomPattern = await randomGeneratorService.getRandomPattern(0);
+        setAnswerIndices(randomPattern.data);
+      }
+
+      if (difficulty === 'Intermediate') {
+        const randomPattern = await randomGeneratorService.getRandomPattern(1);
+        setAnswerIndices(randomPattern.data);
+      }
+    })();
+  }, []);
+
   const onCountDown = useCallback(() => {
     if (difficulty === 'High') {
       rankingRepository.setHighRank(answerCount);
@@ -60,19 +78,39 @@ export const SpeedRun = ({
       </View>
       <View style={styles.patternRendererContainer}>
         <View style={styles.patternRendererLayout}>
-          <PatternModule
-            answerIndices={answerIndices}
-            onSuccess={() => {
-              if (!modalVisible) {
-                setMaxSecond(Math.max(maxSecond * timeReduceRatio, 2));
-                setAnswerIndices(patternGenerator.current.generate());
-                setAnswerCount((count) => (count as number) + 1);
-                countDownInit(Math.max(maxSecond * timeReduceRatio, 2));
-              }
-            }}
-            row={3}
-            column={3}
-          />
+          {answerIndices && (
+            <PatternModule
+              answerIndices={answerIndices}
+              onSuccess={() => {
+                if (!modalVisible) {
+                  (async () => {
+                    setMaxSecond(Math.max(maxSecond * timeReduceRatio, 2));
+                    setAnswerCount((count) => (count as number) + 1);
+                    countDownInit(Math.max(maxSecond * timeReduceRatio, 2));
+                    if (difficulty === 'High') {
+                      const randomPattern =
+                        await randomGeneratorService.getRandomPattern(2);
+                      setAnswerIndices(randomPattern.data);
+                    }
+
+                    if (difficulty === 'Low') {
+                      const randomPattern =
+                        await randomGeneratorService.getRandomPattern(0);
+                      setAnswerIndices(randomPattern.data);
+                    }
+
+                    if (difficulty === 'Intermediate') {
+                      const randomPattern =
+                        await randomGeneratorService.getRandomPattern(1);
+                      setAnswerIndices(randomPattern.data);
+                    }
+                  })();
+                }
+              }}
+              row={3}
+              column={3}
+            />
+          )}
         </View>
       </View>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
