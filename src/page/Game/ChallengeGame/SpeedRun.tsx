@@ -11,7 +11,6 @@ import {
 import {Modal} from 'react-native';
 import {useCountDown} from '../../../hook/useCountDown';
 import {rankingRepository} from '../../../repository/RankingRepository';
-import {useIsFocused} from '@react-navigation/native';
 
 const timeReduceRatio = 0.97;
 
@@ -76,7 +75,7 @@ export const SpeedRun = ({
           />
         </View>
       </View>
-      <Modal animationType="slide" transparent={false} visible={modalVisible}>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Answer : {answerCount}</Text>

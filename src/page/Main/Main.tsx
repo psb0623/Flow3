@@ -1,17 +1,30 @@
 import React from 'react';
 import {StyleSheet, Image} from 'react-native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {StageGameStack} from '../stack/StageGameStack';
+import {
+  BottomTabNavigationProp,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs';
+import {
+  StageGameStack,
+  StageGameStackType,
+  StageGameTypes,
+} from '../stack/StageGameStack';
 import {ChallengeGameStack} from '../stack/ChallengeGameStack';
 import {PublicTab} from '../Game/Public/Public';
+import {DailyPattern} from '../Game/DailyPattern';
+import {BottomTabNavigationConfig} from '@react-navigation/bottom-tabs/lib/typescript/src/types';
 
 type MainTabType = {
   StageGameStack: undefined;
   ChallengeGame: undefined;
-  Public: undefined;
+  DailyPattern: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabType>();
+
+export type MainTabNavigationProp = {
+  navigation: BottomTabNavigationProp<MainTabType, keyof MainTabType>;
+};
 
 export const Main = () => {
   return (
@@ -43,10 +56,10 @@ export const Main = () => {
             );
           }
 
-          if (route.name == 'Public') {
+          if (route.name == 'DailyPattern') {
             return (
               <Image
-                source={require('./img/internet.png')}
+                source={require('./img/daily-calendar.png')}
                 style={{
                   width: size,
                   height: size,
@@ -73,10 +86,10 @@ export const Main = () => {
           title: '도전 모드',
         }}></Tab.Screen>
       <Tab.Screen
-        name={'Public'}
-        component={PublicTab}
+        name={'DailyPattern'}
+        component={DailyPattern}
         options={{
-          title: '공유',
+          title: '오늘의 패턴',
         }}></Tab.Screen>
     </Tab.Navigator>
   );
