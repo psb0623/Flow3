@@ -94,7 +94,12 @@ export const SpeedRun = ({
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Answer : {answerCount}</Text>
+            <Text style={{fontSize: 25, marginBottom: 10}}>게임 종료</Text>
+            <Text
+              style={[
+                styles.modalText,
+                {marginBottom: 20},
+              ]}>{`${answerCount}개를 풀었습니다!`}</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
@@ -181,6 +186,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
+    width: 60,
     borderRadius: 20,
     padding: 10,
     elevation: 2,
@@ -199,5 +205,6 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+    //fontSize: 20,
   },
 });

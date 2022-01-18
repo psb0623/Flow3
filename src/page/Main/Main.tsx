@@ -89,7 +89,7 @@ export const Main = () => {
         name={'DailyPattern'}
         component={DailyPattern}
         options={{
-          title: '오늘의 패턴',
+          title: '일일 챌린지',
         }}></Tab.Screen>
     </Tab.Navigator>
   );

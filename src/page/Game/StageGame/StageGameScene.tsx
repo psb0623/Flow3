@@ -133,7 +133,7 @@ export const StageGameScene = ({
             source={require('./eletronic.png')}
             style={{width: 20, height: 20}}
           />
-          <Text style={styles.textStyle}>{hintCount}</Text>
+          <Text style={styles.textStyle}>{`  ${hintCount}`}</Text>
         </Pressable>
         <View
           style={{
