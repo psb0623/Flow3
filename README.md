@@ -74,3 +74,21 @@
 <p align="center">
 <img width=300 src="/images/일반모드.png"></img>
 </p>
+<p align="center">
+<img width=300 src ="https://user-images.githubusercontent.com/68819204/149933545-55cf48cc-c559-4cd7-bd52-84e674054b48.gif">
+</p>
+<p align="center">
+<img width=300 src="https://user-images.githubusercontent.com/68819204/149933918-500cf1d7-6d60-4510-8bb7-51ef62de6e38.gif">
+</p>
+<p align="center">
+<img width=300 src="https://user-images.githubusercontent.com/68819204/149933893-b70e0392-41e7-4327-ad08-2c4189415031.gif">  
+</p>
+<p align="center">
+  <img width=300 src="https://user-images.githubusercontent.com/68819204/149933899-f3a5b4d9-5b0d-4ef1-8659-6c2ca76c4dbd.gif">
+  </p>
+<p align="center">
+  <img width=300 src="https://user-images.githubusercontent.com/68819204/149933907-91f5e0f3-b9d5-4783-8e8c-9a2e2d69ba3b.gif">
+  </p>
+
+
+
