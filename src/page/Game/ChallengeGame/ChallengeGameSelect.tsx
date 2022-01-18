@@ -2,6 +2,7 @@
 import * as React from 'react';
 import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {BasicButton} from '../../../components/BasicButton';
+import {BasicButtonWhite} from '../../../components/BasicButtonWhite';
 import {ChallengeGameStackNavigationProp} from '../../stack/ChallengeGameStack';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import Animated, {useSharedValue, withSpring} from 'react-native-reanimated';
@@ -14,7 +15,7 @@ import {speedRunService} from '../../../api';
 
 type Props = {} & ChallengeGameStackNavigationProp;
 
-const diffColor = ['#14DB7D', '#2294F2', '#7D49E0'];
+export const diffColor = ['#14DB7D', '#2294F2', '#7D49E0'];
 
 export const ChallengeGameSelect = ({navigation}: Props) => {
   const isFocused = useIsFocused();
@@ -82,17 +83,10 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
   }, [lowRankTop3, intermediateRankTop3, highRankTop3]);
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && top3[0][0] != 0 && height != 0) {
       show(top3Diff);
     }
-  }, [
-    isFocused,
-    top3Diff,
-    lowRankTop3,
-    highRankTop3,
-    intermediateRankTop3,
-    height,
-  ]);
+  }, [top3Diff, top3, height]);
 
   const goSpeedRun = useCallback((difficulty: SpeedRunDifficulty) => {
     navigation.navigate('SpeedRun', {
@@ -137,25 +131,31 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
       <View style={styles.HOFLayout}>
         <View style={styles.rankingDifficultyLayout}>
           <View style={styles.buttonBasicLayout}>
-            <BasicButton
+            <BasicButtonWhite
               onPressed={() => {
                 setTop3Diff(0);
               }}
-              text={'초급 TOP3'}></BasicButton>
+              text={'초급 TOP3'}
+              backgroundColor={diffColor[0]}
+              textColor={'#EEEEEE'}></BasicButtonWhite>
           </View>
           <View style={styles.buttonBasicLayout}>
-            <BasicButton
+            <BasicButtonWhite
               onPressed={() => {
                 setTop3Diff(1);
               }}
-              text={'중급 TOP3'}></BasicButton>
+              text={'중급 TOP3'}
+              backgroundColor={diffColor[1]}
+              textColor={'#EEEEEE'}></BasicButtonWhite>
           </View>
           <View style={styles.buttonBasicLayout}>
-            <BasicButton
+            <BasicButtonWhite
               onPressed={() => {
                 setTop3Diff(2);
               }}
-              text={'고급 TOP3'}></BasicButton>
+              text={'고급 TOP3'}
+              backgroundColor={diffColor[2]}
+              textColor={'#EEEEEE'}></BasicButtonWhite>
           </View>
         </View>
         <View
@@ -216,60 +216,66 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
       <View style={styles.selectGameLayout}>
         <View
           style={[styles.difficultyLayout, {backgroundColor: diffColor[0]}]}>
-          <Text style={styles.textStyle}>초급 </Text>
+          <Text style={styles.textStyle}>{'초급  |'}</Text>
           <Text style={styles.rankTextStyle}>{lowRank}점 </Text>
           <View style={styles.buttonLayout}>
-            <BasicButton
+            <BasicButtonWhite
               onPressed={() => {
                 goRankingList('Low');
               }}
-              text={'순위표'}></BasicButton>
+              text={'순위표'}
+              textColor={diffColor[0]}></BasicButtonWhite>
           </View>
           <View style={styles.buttonLayout}>
-            <BasicButton
+            <BasicButtonWhite
               onPressed={() => {
                 goSpeedRun('Low');
               }}
-              text={'도전!'}></BasicButton>
+              text={'도전!'}
+              textColor={diffColor[0]}></BasicButtonWhite>
           </View>
         </View>
         <View
           style={[styles.difficultyLayout, {backgroundColor: diffColor[1]}]}>
-          <Text style={styles.textStyle}>중급</Text>
+          <Text style={styles.textStyle}>{'중급  |'}</Text>
           <Text style={styles.rankTextStyle}>{intermediateRank}점 </Text>
           <View style={styles.buttonLayout}>
-            <BasicButton
+            <BasicButtonWhite
               onPressed={() => {
                 goRankingList('Intermediate');
               }}
-              text={'순위표'}></BasicButton>
+              text={'순위표'}
+              textColor={diffColor[1]}></BasicButtonWhite>
           </View>
           <View style={styles.buttonLayout}>
-            <BasicButton
+            <BasicButtonWhite
               onPressed={() => {
                 goSpeedRun('Intermediate');
               }}
-              text={'도전!'}></BasicButton>
+              text={'도전!'}
+              textColor={diffColor[1]}></BasicButtonWhite>
           </View>
         </View>
 
         <View
           style={[styles.difficultyLayout, {backgroundColor: diffColor[2]}]}>
-          <Text style={styles.textStyle}>고급 </Text>
+          <Text style={styles.textStyle}>{'고급  |'}</Text>
           <Text style={styles.rankTextStyle}>{highRank}점 </Text>
           <View style={styles.buttonLayout}>
-            <BasicButton
+            <BasicButtonWhite
               onPressed={() => {
                 goRankingList('High');
               }}
-              text={'순위표'}></BasicButton>
+              text={'순위표'}
+              textColor={diffColor[2]}></BasicButtonWhite>
           </View>
           <View style={styles.buttonLayout}>
-            <BasicButton
+            <BasicButtonWhite
               onPressed={() => {
                 goSpeedRun('High');
               }}
-              text={'도전!'}></BasicButton>
+              text={'도전!'}
+              textColor={diffColor[2]}></BasicButtonWhite>
           </View>
         </View>
       </View>
@@ -347,6 +353,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     //height: 70,
+    padding: 10,
     flex: 1,
     marginBottom: 10,
     backgroundColor: '#2196F3',
@@ -360,6 +367,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 20,
   },
 
   rankTextStyle: {

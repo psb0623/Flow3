@@ -57,19 +57,19 @@ export const ChallengeGameStack = () => {
         options={(router) => {
           if (router.route.params.difficulty === 'High') {
             return {
-              title: 'SpeedRun - High',
+              title: '고급 모드',
             };
           }
 
           if (router.route.params.difficulty === 'Intermediate') {
             return {
-              title: 'SpeedRun - Intermediate',
+              title: '중급 모드',
             };
           }
 
           if (router.route.params.difficulty === 'Low') {
             return {
-              title: 'SpeedRun - Low',
+              title: '초급 모드',
             };
           }
           return {};
@@ -81,19 +81,19 @@ export const ChallengeGameStack = () => {
         options={(router) => {
           if (router.route.params.difficulty === 'High') {
             return {
-              title: 'SpeedRunRankingList - High',
+              title: '고급 모드 랭킹',
             };
           }
 
           if (router.route.params.difficulty === 'Intermediate') {
             return {
-              title: 'SpeedRunRankingList - Intermediate',
+              title: '중급 모드 랭킹',
             };
           }
 
           if (router.route.params.difficulty === 'Low') {
             return {
-              title: 'SpeedRunRankingLIst - Low',
+              title: '초급 모드 랭킹',
             };
           }
           return {};

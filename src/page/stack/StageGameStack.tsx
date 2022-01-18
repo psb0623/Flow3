@@ -63,7 +63,7 @@ export const StageGameStack = () => {
         }) => {
           const title = `${
             gameType == 'Three' ? '3 X 3' : '4 X 4'
-          } - ${gameStageNumber}`;
+          } - 스테이지 ${gameStageNumber}`;
           return {
             title,
           };

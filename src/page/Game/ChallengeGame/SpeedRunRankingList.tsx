@@ -8,6 +8,7 @@ import {GetRankListResponse} from '../../../api/service/types/GetRankListRespons
 import {ChallengeGameStackRouteProp} from '../../stack/ChallengeGameStack';
 import {rankingRepository} from '../../../repository/RankingRepository';
 import {Divider} from 'react-native-paper';
+import {diffColor} from './ChallengeGameSelect';
 
 type Props = {} & ChallengeGameStackRouteProp<'SpeedRunRankingList'>;
 
@@ -66,6 +67,15 @@ export const SpeedRunRankingList = ({
                 <SpeedRunRankingItem
                   answerCount={item.answerCount}
                   ranking={item.ranking}
+                  backgroundColor={
+                    diffColor[
+                      difficulty === 'High'
+                        ? 2
+                        : difficulty === 'Intermediate'
+                        ? 1
+                        : 0
+                    ]
+                  }
                 />
               );
             }}
@@ -79,7 +89,19 @@ export const SpeedRunRankingList = ({
               (myRank / rankList.length) *
               100
             ).toFixed(2)}%)`}</Text>
-            <SpeedRunRankingItem answerCount={answerCount} ranking={myRank} />
+            <SpeedRunRankingItem
+              answerCount={answerCount}
+              ranking={myRank}
+              backgroundColor={
+                diffColor[
+                  difficulty === 'High'
+                    ? 2
+                    : difficulty === 'Intermediate'
+                    ? 1
+                    : 0
+                ]
+              }
+            />
           </>
         )}
       </View>
@@ -89,9 +111,11 @@ export const SpeedRunRankingList = ({
 export const SpeedRunRankingItem = ({
   answerCount,
   ranking,
+  backgroundColor,
 }: {
   answerCount: number;
   ranking: number;
+  backgroundColor: string;
 }) => {
   return (
     <View
@@ -100,7 +124,7 @@ export const SpeedRunRankingItem = ({
         height: 90,
         padding: 10,
       }}>
-      <View style={styles.rankingItemContainer}>
+      <View style={[styles.rankingItemContainer, {backgroundColor}]}>
         <Divider></Divider>
         <View style={styles.rankingContainer}>
           <Text style={styles.rankingText}>{ranking + '위   |'}</Text>
@@ -153,8 +177,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   scoreText: {
-    fontSize: 20,
+    fontSize: 25,
     color: 'white',
+    //fontWeight: 'bold',
   },
   rankingText: {
     fontSize: 28,
