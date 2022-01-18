@@ -44,14 +44,14 @@
 - #### 힌트
 
 <p align="center">
-<img src="./images/스테이지"></img>
+<img src="/images/스테이지.png"></img>
 </p>
 <p align="center">
-<img src="./images/44스테이지"></img>
+<img src="/images/44스테이지.png"></img>
 </p>
 <p align="center">
-<img src="./images/스테이지모드선택"></img>
+<img src="/images/스테이지모드선택.png"></img>
 </p>
 <p align="center">
-<img src="./images/일반모드"></img>
+<img src="/images/일반모드.png"></img>
 </p>
