@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {Image, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import {BasicButton} from '../../../components/BasicButton';
 import {BasicButtonWhite} from '../../../components/BasicButtonWhite';
 import {ChallengeGameStackNavigationProp} from '../../stack/ChallengeGameStack';
@@ -127,7 +127,7 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.HOFLayout}>
         <View style={styles.rankingDifficultyLayout}>
           <View style={styles.buttonBasicLayout}>
@@ -279,7 +279,7 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

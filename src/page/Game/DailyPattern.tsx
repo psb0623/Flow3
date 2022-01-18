@@ -1,13 +1,6 @@
 // @flow
 import * as React from 'react';
-import {
-  Modal,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import {PatternModule} from './PatternModule/PatternModule';
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {dailyRepository} from '../../repository/DailyRepository';
@@ -29,6 +22,7 @@ export const DailyPattern = ({navigation}: Props) => {
   const [canSolvedDateLower, setCanSolvedDateLower] = useState<number>(
     Date.now(),
   );
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -46,15 +40,18 @@ export const DailyPattern = ({navigation}: Props) => {
 
   const onSuccessModalPressed = useCallback(() => {
     (async () => {
+      setModal(false);
       navigation.navigate('StageGameStack');
       const {data} = await randomGeneratorService.getRandomPattern(2);
-
       setInitialPattern(data);
     })();
   }, []);
-
   useEffect(() => {
     (async () => {
+      if (!isFocused) {
+        return;
+      }
+      console.log(1);
       const _daily = await dailyRepository.getSolvedAt();
       const _currentDate = new Date(_daily);
       const _canSolvedDateLower = _currentDate.setDate(
@@ -66,16 +63,12 @@ export const DailyPattern = ({navigation}: Props) => {
       if (_canSolvedDateLower <= Date.now()) {
         setCanSolve(true);
       } else {
+        setModal(true);
         setCanSolve(false);
       }
     })();
   }, [isFocused, daily]);
-
-  useEffect(() => {
-    return () => {
-      setCanSolve(true);
-    };
-  }, []);
+  console.log(modal);
 
   return (
     <View
@@ -89,7 +82,7 @@ export const DailyPattern = ({navigation}: Props) => {
       <Modal
         animationType="fade"
         transparent={false}
-        visible={!canSolve}
+        visible={modal}
         style={{
           width: '100%',
           height: '100%',

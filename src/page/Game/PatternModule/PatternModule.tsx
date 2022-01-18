@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {PatternRenderer} from '../../../components/Renderer/PatternRenderer';
 import {normalize, Pattern} from '../Pattern/Pattern';
 import {FC, useCallback} from 'react';
@@ -30,7 +30,7 @@ export const PatternModule = ({
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.patternRendererContainer}>
         <View style={styles.patternRendererLayout}>
           <PatternRenderer
@@ -54,7 +54,7 @@ export const PatternModule = ({
           answerIndices={answerIndices}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -97,6 +97,7 @@ export const Main = () => {
         name={'DailyPattern'}
         component={DailyPattern}
         options={{
+          headerShown: true,
           title: '일일 챌린지',
         }}></Tab.Screen>
     </Tab.Navigator>

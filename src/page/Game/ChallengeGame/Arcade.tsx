@@ -7,7 +7,7 @@ import {Pattern} from '../Pattern/Pattern';
 type Props = {};
 export const Arcade = (props: Props) => {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.patternRendererContainer}>
         <View style={styles.patternRendererLayout}>
           <PatternRenderer selectedIndexes={[]} columnCount={3} rowCount={3} />
@@ -24,7 +24,7 @@ export const Arcade = (props: Props) => {
           inactiveColor={'#8E91A8'}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
