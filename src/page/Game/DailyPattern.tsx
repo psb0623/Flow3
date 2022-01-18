@@ -70,6 +70,23 @@ export const DailyPattern = ({navigation}: Props) => {
   }, [isFocused, daily]);
   console.log(modal);
 
+  let [countDown, setCountDown] = useState<number>(
+    canSolvedDateLower - Date.now(),
+  );
+  let second = ((countDown / 1000) >> 0) % 60;
+  let minute = ((countDown / 60000) >> 0) % 60;
+  let hour = ((countDown / (60000 * 60)) >> 0) % 60;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountDown(canSolvedDateLower - Date.now());
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [canSolvedDateLower]);
+
   return (
     <View
       style={{
@@ -111,27 +128,38 @@ export const DailyPattern = ({navigation}: Props) => {
                   <Text style={styles.titleStyle}>
                     일일 챌린지를 완료했습니다!
                   </Text>
+
+                  <Text
+                    style={{fontSize: 20, color: '#2196F3', marginBottom: 10}}>
+                    {'보상'}
+                  </Text>
                   <View
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'center',
                       alignItems: 'center',
+                      marginBottom: 50,
                     }}>
                     <Image
                       source={require('./StageGame/eletronic.png')}
                       style={{width: 50, height: 50}}
                     />
-                    <Text style={{fontSize: 40, color: '#2196F3'}}>+1</Text>
+                    <Text style={{fontSize: 40, color: '#2196F3'}}>
+                      {'+1 '}
+                    </Text>
                   </View>
 
-                  <Text style={styles.textStyle}>힌트가 1 증가합니다.</Text>
-                  <Text style={styles.textStyle}>
-                    푼 시각 : {new Date(daily).toLocaleString()}
+                  <Text
+                    style={{fontSize: 20, color: '#242424', marginBottom: 10}}>
+                    다음 챌린지까지
                   </Text>
-                  <Text style={styles.textStyle}>
-                    내일의 문제를 풀 수 있는 시각 푼 시간 :
-                    {new Date(canSolvedDateLower).toLocaleString()}
-                  </Text>
+
+                  <Text
+                    style={{
+                      fontSize: 35,
+                      color: '#242424',
+                      marginBottom: 10,
+                    }}>{`${hour}:${minute}:${second}`}</Text>
                 </View>
               </Pressable>
             </View>
