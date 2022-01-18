@@ -44,7 +44,7 @@
 - #### 힌트
 
 <p align="center">
-<img src="/images/스테이지.png"></img>
+<img width=300 src="/images/스테이지.png"></img>
 </p>
 <p align="center">
 <img src="/images/44스테이지.png"></img>
