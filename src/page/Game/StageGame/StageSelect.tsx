@@ -6,6 +6,7 @@ import {StageGameStackNavigationProp} from '../../stack/StageGameStack';
 import {BasicButton} from '../../../components/BasicButton';
 import ModalSelector from 'react-native-modal-selector';
 import {Pattern} from '../Pattern/Pattern';
+import {Splash} from '../../Splash/Splash';
 
 type Props = {} & StageGameStackNavigationProp;
 
@@ -33,11 +34,7 @@ export const StageSelect = ({navigation}: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.titleContainer}>
-        <View style={styles.title}>
-          <View style={styles.patternContainer}>
-            <Pattern />
-          </View>
-        </View>
+        <Splash />
       </View>
       <View style={styles.buttonContainer}>
         <BasicButton
@@ -79,12 +76,11 @@ const styles = StyleSheet.create({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: 20,
   },
   titleContainer: {
     width: '100%',
+    height: '70%',
     paddingBottom: 20,
   },
   title: {
