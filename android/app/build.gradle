@@ -137,6 +137,7 @@ android {
     }
 
     defaultConfig {
+        manifestPlaceholders = [appAuthRedirectScheme: 'dev.expo.app']
         applicationId 'com.example.android'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
