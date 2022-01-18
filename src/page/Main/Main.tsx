@@ -71,6 +71,13 @@ export const Main = () => {
         },
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
+        tabBarStyle: {
+          paddingTop: 10,
+          height: 70,
+          paddingBottom: 10,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
       })}>
       <Tab.Screen
         name={'StageGameStack'}
@@ -84,7 +91,8 @@ export const Main = () => {
         component={ChallengeGameStack}
         options={{
           title: '도전 모드',
-        }}></Tab.Screen>
+        }}
+      />
       <Tab.Screen
         name={'DailyPattern'}
         component={DailyPattern}

@@ -47,13 +47,13 @@ export const DailyPattern = ({navigation}: Props) => {
   const onSuccessModalPressed = useCallback(() => {
     (async () => {
       navigation.navigate('StageGameStack');
-      setCanSolve(true);
       const {data} = await randomGeneratorService.getRandomPattern(2);
+
       setInitialPattern(data);
     })();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     (async () => {
       const _daily = await dailyRepository.getSolvedAt();
       const _currentDate = new Date(_daily);
@@ -71,8 +71,14 @@ export const DailyPattern = ({navigation}: Props) => {
     })();
   }, [isFocused, daily]);
 
+  useEffect(() => {
+    return () => {
+      setCanSolve(true);
+    };
+  }, []);
+
   return (
-    <SafeAreaView
+    <View
       style={{
         width: '100%',
         height: '100%',
@@ -80,7 +86,14 @@ export const DailyPattern = ({navigation}: Props) => {
       {initialPattern && (
         <PatternModule answerIndices={initialPattern} onSuccess={onSuccess} />
       )}
-      <Modal animationType="fade" transparent={false} visible={!canSolve}>
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={!canSolve}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Pressable style={[styles.button]} onPress={onSuccessModalPressed}>
@@ -97,7 +110,7 @@ export const DailyPattern = ({navigation}: Props) => {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -107,12 +120,11 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
   modalView: {
-    margin: 20,
+    width: '100%',
+    height: '100%',
     backgroundColor: 'white',
-    borderRadius: 20,
     padding: 35,
     alignItems: 'center',
   },
@@ -121,7 +133,6 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 20,
     padding: 10,
-    elevation: 2,
   },
   buttonOpen: {
     backgroundColor: '#F194FF',

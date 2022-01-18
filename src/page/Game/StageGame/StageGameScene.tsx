@@ -42,7 +42,7 @@ export const StageGameScene = ({
     });
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     (async () => {
       try {
         if (gameType == 'Three') {
@@ -97,12 +97,7 @@ export const StageGameScene = ({
     }
   }, [stage]);
 
-  useEffect(() => {
-    return () => {
-      setStage(null);
-      setSelectedIndices(null);
-    };
-  }, []);
+  console.log(selectedIndices);
 
   return (
     selectedIndices && (

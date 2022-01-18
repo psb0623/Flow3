@@ -1,5 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import ReactNative, {StyleSheet, View, Text, Vibration} from 'react-native';
+import ReactNative, {
+  StyleSheet,
+  View,
+  Text,
+  Vibration,
+  Platform,
+} from 'react-native';
 import {
   PanGestureHandler,
   TapGestureHandler,
@@ -356,7 +362,7 @@ export function Pattern(props: PropsType) {
                 runOnJS(connectSound)(idx, props.rowCount);
                 connectAnim[selectedIndexes.value.length - 1].value =
                   withSpring(0);
-                runOnJS(Vibration.vibrate)(10);
+                if (Platform.OS === 'android') runOnJS(Vibration.vibrate)(10);
               }
               return false;
             }
@@ -386,7 +392,7 @@ export function Pattern(props: PropsType) {
               normPath.push(idx);
               selectAnim[idx].value = withSpring(2);
               runOnJS(connectSound)(idx, props.rowCount);
-              runOnJS(Vibration.vibrate)(10);
+              if (Platform.OS === 'android') runOnJS(Vibration.vibrate)(10);
               runOnJS(fadeIn)();
               return false;
             }
