@@ -36,6 +36,7 @@ export async function connectSound(idx: number, mode: number) {
 
   try {
     await bgm.loadAsync(melody[mode === 3 ? octave[idx] : idx]);
+    await bgm.setVolumeAsync(0.4);
     await bgm.playAsync();
     setTimeout(async () => {
       await bgm.stopAsync();

@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
+import {Image, Modal, Pressable, StyleSheet, Text, View} from 'react-native';
 import {PatternModule} from './PatternModule/PatternModule';
 import {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {dailyRepository} from '../../repository/DailyRepository';
@@ -75,34 +75,69 @@ export const DailyPattern = ({navigation}: Props) => {
       style={{
         width: '100%',
         height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}>
-      {initialPattern && (
-        <PatternModule answerIndices={initialPattern} onSuccess={onSuccess} />
-      )}
-      <Modal
-        animationType="fade"
-        transparent={false}
-        visible={modal}
+      <View
         style={{
-          width: '100%',
-          height: '100%',
+          width: '80%',
+          height: '80%',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Pressable style={[styles.button]} onPress={onSuccessModalPressed}>
-              <Text style={styles.textStyle}>오늘의 문제 푸셨습니다.</Text>
-              <Text style={styles.textStyle}>힌트가 1 증가합니다.</Text>
-              <Text style={styles.textStyle}>
-                푼 시각 : {new Date(daily).toLocaleString()}
-              </Text>
-              <Text style={styles.textStyle}>
-                내일의 문제를 풀 수 있는 시각 푼 시간 :
-                {new Date(canSolvedDateLower).toLocaleString()}
-              </Text>
-            </Pressable>
+        {initialPattern && (
+          <PatternModule answerIndices={initialPattern} onSuccess={onSuccess} />
+        )}
+        <Modal
+          animationType="fade"
+          transparent={false}
+          visible={modal}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Pressable
+                style={[styles.button]}
+                onPress={onSuccessModalPressed}>
+                <View
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={styles.titleStyle}>
+                    일일 챌린지를 완료했습니다!
+                  </Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Image
+                      source={require('./StageGame/eletronic.png')}
+                      style={{width: 50, height: 50}}
+                    />
+                    <Text style={{fontSize: 40, color: '#2196F3'}}>+1</Text>
+                  </View>
+
+                  <Text style={styles.textStyle}>힌트가 1 증가합니다.</Text>
+                  <Text style={styles.textStyle}>
+                    푼 시각 : {new Date(daily).toLocaleString()}
+                  </Text>
+                  <Text style={styles.textStyle}>
+                    내일의 문제를 풀 수 있는 시각 푼 시간 :
+                    {new Date(canSolvedDateLower).toLocaleString()}
+                  </Text>
+                </View>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </View>
     </View>
   );
 };
@@ -120,16 +155,26 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 35,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     width: '100%',
     height: '100%',
     borderRadius: 20,
     padding: 10,
+    justifyContent: 'center',
   },
   buttonOpen: {
     backgroundColor: '#F194FF',
   },
+  titleStyle: {
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 25,
+    marginBottom: 50,
+  },
+
   textStyle: {
     color: 'black',
     fontWeight: 'bold',

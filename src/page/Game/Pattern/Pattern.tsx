@@ -233,12 +233,12 @@ export function Pattern(props: PropsType) {
     }
     patternPoints.value = points;
   };
-  const onEndJS = (res) => {
+  const onEndJS = () => {
     if (props.onCheck) {
       const unselect = () => {
         selectAnim.forEach((v, idx) => {
           v.value = withDelay(
-            (selectedIndexes.value.findIndex((v) => v === idx) * 900) /
+            (selectedIndexes.value.findIndex((v) => v === idx) * 600) /
               (props.rowCount * props.columnCount),
             withSpring(1),
           );
@@ -409,7 +409,7 @@ export function Pattern(props: PropsType) {
         if (selectedIndexes.value.length > 0) {
           //console.log(normalizedPath.value);
           //runOnJS(console.log)(normalize(selectedIndexes.value));
-          runOnJS(onEndJS)(selectedIndexes.value.join(''));
+          runOnJS(onEndJS)();
         }
       },
     });

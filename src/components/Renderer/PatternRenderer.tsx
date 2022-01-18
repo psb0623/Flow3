@@ -56,7 +56,9 @@ export const PatternRenderer = ({
 
   const R = useDerivedValue(
     () =>
-      (containerLayout.value.min / rowCount - realPatternMargin.value * 2) / 2,
+      0.99 *
+      ((containerLayout.value.min / rowCount - realPatternMargin.value * 2) /
+        2),
   );
   const patternPoints = useSharedValue<Point[] | null>(null);
 
