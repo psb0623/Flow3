@@ -65,6 +65,7 @@ export const StageSelect = ({navigation}: Props) => {
             goStage4();
           }
         }}
+        cancelText={'취소'}
       />
     </View>
   );
