@@ -5,7 +5,7 @@ import {
   StageGameStackRouteProp,
 } from '../../stack/StageGameStack';
 import {stageService} from '../../../api';
-import {Stage} from './Stage';
+import {isStage, Stage} from './Stage';
 import {PatternModule} from '../PatternModule/PatternModule';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {stageRepository} from '../../../repository/StageRepository';
@@ -49,14 +49,22 @@ export const StageGameScene = ({
           const {data} = await stageService.getStage3Detail(
             gameStageNumber.toString(),
           );
-          setStage(data);
+          if (!isStage(data)) {
+            throw new Error();
+          } else {
+            setStage(data);
+          }
         }
 
         if (gameType == 'Four') {
           const {data} = await stageService.getStage4Detail(
             gameStageNumber.toString(),
           );
-          setStage(data);
+          if (!isStage(data)) {
+            throw new Error();
+          } else {
+            setStage(data);
+          }
         }
       } catch (e) {
         navigation.navigate('StageGame', {

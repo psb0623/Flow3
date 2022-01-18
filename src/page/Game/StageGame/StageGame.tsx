@@ -33,16 +33,6 @@ export const StageGame = ({
   }, []);
 
   useLayoutEffect(() => {
-    if (stage != null && beforeGameStageNumber != undefined) {
-      if (stage.length <= beforeGameStageNumber) {
-        navigation.push('StageGameSuccess', {
-          gameType: gameType,
-        });
-      }
-    }
-  });
-
-  useLayoutEffect(() => {
     if (isFocused) {
       (async () => {
         if (gameType === 'Three') {
