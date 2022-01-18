@@ -3,7 +3,6 @@ import * as React from 'react';
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {PatternModule} from '../PatternModule/PatternModule';
-import {PatternRandomGenerator} from '../PatternRandomGenerator';
 import {
   ChallengeGameStackNavigationProp,
   ChallengeGameStackRouteProp,
@@ -11,7 +10,8 @@ import {
 import {Modal} from 'react-native';
 import {useCountDown} from '../../../hook/useCountDown';
 import {rankingRepository} from '../../../repository/RankingRepository';
-import {randomGeneratorService} from '../../../api';
+import {randomGeneratorService, speedRunService} from '../../../api';
+import {SpeedRunDifficultyMap} from './SpeedRunDifficulty';
 
 const timeReduceRatio = 0.97;
 
@@ -31,20 +31,10 @@ export const SpeedRun = ({
 
   useEffect(() => {
     (async () => {
-      if (difficulty === 'High') {
-        const randomPattern = await randomGeneratorService.getRandomPattern(2);
-        setAnswerIndices(randomPattern.data);
-      }
-
-      if (difficulty === 'Low') {
-        const randomPattern = await randomGeneratorService.getRandomPattern(0);
-        setAnswerIndices(randomPattern.data);
-      }
-
-      if (difficulty === 'Intermediate') {
-        const randomPattern = await randomGeneratorService.getRandomPattern(1);
-        setAnswerIndices(randomPattern.data);
-      }
+      const randomPattern = await randomGeneratorService.getRandomPattern(
+        SpeedRunDifficultyMap[difficulty],
+      );
+      setAnswerIndices(randomPattern.data);
     })();
   }, []);
 
@@ -87,23 +77,11 @@ export const SpeedRun = ({
                     setMaxSecond(Math.max(maxSecond * timeReduceRatio, 2));
                     setAnswerCount((count) => (count as number) + 1);
                     countDownInit(Math.max(maxSecond * timeReduceRatio, 2));
-                    if (difficulty === 'High') {
-                      const randomPattern =
-                        await randomGeneratorService.getRandomPattern(2);
-                      setAnswerIndices(randomPattern.data);
-                    }
-
-                    if (difficulty === 'Low') {
-                      const randomPattern =
-                        await randomGeneratorService.getRandomPattern(0);
-                      setAnswerIndices(randomPattern.data);
-                    }
-
-                    if (difficulty === 'Intermediate') {
-                      const randomPattern =
-                        await randomGeneratorService.getRandomPattern(1);
-                      setAnswerIndices(randomPattern.data);
-                    }
+                    const randomPattern =
+                      await randomGeneratorService.getRandomPattern(
+                        SpeedRunDifficultyMap[difficulty],
+                      );
+                    setAnswerIndices(randomPattern.data);
                   })();
                 }
               }}
@@ -120,8 +98,14 @@ export const SpeedRun = ({
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
-                navigation.pop();
-                setModalVisible(!modalVisible);
+                (async () => {
+                  await speedRunService.updateHighScore(
+                    difficulty,
+                    answerCount,
+                  );
+                  navigation.pop();
+                  setModalVisible(!modalVisible);
+                })();
               }}>
               <Text style={styles.textStyle}>종료</Text>
             </Pressable>

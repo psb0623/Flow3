@@ -9,6 +9,8 @@ import useLayout from 'react-native-paper/lib/typescript/utils/useLayout';
 import {SpeedRunDifficulty} from './SpeedRunDifficulty';
 import {useIsFocused} from '@react-navigation/native';
 import {rankingRepository} from '../../../repository/RankingRepository';
+import {SpeedRunService} from '../../../api/service/SpeedRunService';
+import {speedRunService} from '../../../api';
 
 type Props = {} & ChallengeGameStackNavigationProp;
 
@@ -19,6 +21,18 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
   const [highRank, setHighRank] = useState<number>(0);
   const [lowRank, setLowRank] = useState<number>(0);
   const [intermediateRank, setIntermediateRank] = useState<number>(0);
+  const [highRankTop3, setHighRankTop3] = useState<Array<number>>([]);
+  const [intermediateRankTop3, setIntermediateTop3] = useState<Array<number>>(
+    [],
+  );
+  const [lowRankTop3, setLowRankTop3] = useState<Array<number>>([]);
+  const [top3, setTop3] = useState<Array<Array<number>>>([
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ]);
+  const [height, setHeight] = useState<number>(0);
+  const [top3Diff, setTop3Diff] = useState<number>(0);
 
   useEffect(() => {
     (async () => {
@@ -28,13 +42,57 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
     })();
   }, [isFocused]);
 
-  const top3 = [
-    [200, 150, 100],
-    [100, 70, 30],
-    [50, 40, 20],
-  ];
+  useEffect(() => {
+    if (!isFocused) {
+      return;
+    }
+    (async () => {
+      const response = await Promise.all([
+        speedRunService.getRankList('High'),
+        speedRunService.getRankList('Intermediate'),
+        speedRunService.getRankList('Low'),
+      ]);
 
-  const [top3Diff, setTop3Diff] = useState<number>(0);
+      setHighRankTop3(
+        response[0].data.map((value) => {
+          return value.answerCount;
+        }),
+      );
+
+      setIntermediateTop3(
+        response[1].data.map((value) => {
+          return value.answerCount;
+        }),
+      );
+
+      setLowRankTop3(
+        response[2].data.map((value) => {
+          return value.answerCount;
+        }),
+      );
+    })();
+  }, [isFocused]);
+
+  useEffect(() => {
+    setTop3([
+      [...lowRankTop3, 0, 0, 0],
+      [...intermediateRankTop3, 0, 0, 0],
+      [...highRankTop3, 0, 0, 0],
+    ]);
+  }, [lowRankTop3, intermediateRankTop3, highRankTop3]);
+
+  useEffect(() => {
+    if (isFocused) {
+      show(top3Diff);
+    }
+  }, [
+    isFocused,
+    top3Diff,
+    lowRankTop3,
+    highRankTop3,
+    intermediateRankTop3,
+    height,
+  ]);
 
   const goSpeedRun = useCallback((difficulty: SpeedRunDifficulty) => {
     navigation.navigate('SpeedRun', {
@@ -45,7 +103,6 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
   const graphAnim = Array(3)
     .fill(null)
     .map((_) => useRef(new Animated.Value(0)).current);
-  const [height, setHeight] = useState<number>(0);
 
   const onGraphFrameContainerLayout = ({
     nativeEvent: {
@@ -54,7 +111,6 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
   }) => setHeight(height);
 
   const show = (difficulty: number) => {
-    setTop3Diff(difficulty);
     graphAnim.forEach((v, idx) => {
       v.setValue(0);
       Animated.spring(v, {
@@ -65,7 +121,8 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
         restSpeedThreshold: 0.001,
         restDisplacementThreshold: 0.001,
         toValue:
-          (height * (top3[difficulty][idx] + 1) * 0.8) / top3[difficulty][0],
+          (height * (top3[difficulty][idx] + 1) * 0.8) /
+          (top3[difficulty][0] + 1),
       }).start();
     });
   };
@@ -76,20 +133,22 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
         <View style={styles.rankingDifficultyLayout}>
           <View style={styles.buttonLayout}>
             <BasicButton
-              onPressed={() => show(0)}
+              onPressed={() => {
+                setTop3Diff(0);
+              }}
               text={'초급 TOP3'}></BasicButton>
           </View>
           <View style={styles.buttonLayout}>
             <BasicButton
               onPressed={() => {
-                show(1);
+                setTop3Diff(1);
               }}
               text={'중급 TOP3'}></BasicButton>
           </View>
           <View style={styles.buttonLayout}>
             <BasicButton
               onPressed={() => {
-                show(2);
+                setTop3Diff(2);
               }}
               text={'고급 TOP3'}></BasicButton>
           </View>

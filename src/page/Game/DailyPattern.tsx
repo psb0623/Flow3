@@ -15,16 +15,27 @@ import {useIsFocused} from '@react-navigation/native';
 import {hintRepository} from '../../repository/HintRepository';
 import {PatternRandomGenerator} from './PatternRandomGenerator';
 import {MainTabNavigationProp} from '../Main/Main';
+import {RandomGeneratorService} from '../../api/service/RandomGeneratorService';
+import {randomGeneratorService} from '../../api';
 
 type Props = {} & MainTabNavigationProp;
 export const DailyPattern = ({navigation}: Props) => {
-  const initialPattern = useRef(new PatternRandomGenerator().generate());
+  const [initialPattern, setInitialPattern] = useState<null | Array<number>>(
+    null,
+  );
   const [daily, setDaily] = useState(Date.now());
   const isFocused = useIsFocused();
   const [canSolve, setCanSolve] = useState(true);
   const [canSolvedDateLower, setCanSolvedDateLower] = useState<number>(
     Date.now(),
   );
+
+  useEffect(() => {
+    (async () => {
+      const {data} = await randomGeneratorService.getRandomPattern(2);
+      setInitialPattern(data);
+    })();
+  }, []);
 
   const onSuccess = useCallback(() => {
     (async () => {
@@ -37,7 +48,8 @@ export const DailyPattern = ({navigation}: Props) => {
     (async () => {
       navigation.navigate('StageGameStack');
       setCanSolve(true);
-      initialPattern.current = new PatternRandomGenerator().generate();
+      const {data} = await randomGeneratorService.getRandomPattern(2);
+      setInitialPattern(data);
     })();
   }, []);
 
@@ -45,8 +57,8 @@ export const DailyPattern = ({navigation}: Props) => {
     (async () => {
       const _daily = await dailyRepository.getSolvedAt();
       const _currentDate = new Date(_daily);
-      const _canSolvedDateLower = _currentDate.setSeconds(
-        _currentDate.getSeconds() + 30,
+      const _canSolvedDateLower = _currentDate.setDate(
+        _currentDate.getDate() + 1,
       );
 
       setCanSolvedDateLower(_canSolvedDateLower);
@@ -65,9 +77,9 @@ export const DailyPattern = ({navigation}: Props) => {
         width: '100%',
         height: '100%',
       }}>
-      <PatternModule
-        answerIndices={initialPattern.current}
-        onSuccess={onSuccess}></PatternModule>
+      {initialPattern && (
+        <PatternModule answerIndices={initialPattern} onSuccess={onSuccess} />
+      )}
       <Modal animationType="fade" transparent={false} visible={!canSolve}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
