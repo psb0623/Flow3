@@ -14,7 +14,7 @@ import {speedRunService} from '../../../api';
 
 type Props = {} & ChallengeGameStackNavigationProp;
 
-const diffColor = ['#50E989', 'blue', 'black'];
+const diffColor = ['#14DB7D', '#2294F2', '#7D49E0'];
 
 export const ChallengeGameSelect = ({navigation}: Props) => {
   const isFocused = useIsFocused();
@@ -54,19 +54,19 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
       ]);
 
       setHighRankTop3(
-        response[0].data.map((value) => {
+        response[0].data.rows.map((value) => {
           return value.answerCount;
         }),
       );
 
       setIntermediateTop3(
-        response[1].data.map((value) => {
+        response[1].data.rows.map((value) => {
           return value.answerCount;
         }),
       );
 
       setLowRankTop3(
-        response[2].data.map((value) => {
+        response[2].data.rows.map((value) => {
           return value.answerCount;
         }),
       );
@@ -121,8 +121,9 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
         restSpeedThreshold: 0.001,
         restDisplacementThreshold: 0.001,
         toValue:
-          (height * (top3[difficulty][idx] + 1) * 0.8) /
-          (top3[difficulty][0] + 1),
+          (height * (top3[difficulty][idx] + 1) * 0.6) /
+            (top3[difficulty][0] + 1) +
+          0.2 * height,
       }).start();
     });
   };
@@ -165,6 +166,15 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
               styles.graphLayout,
               {height: graphAnim[2], backgroundColor: diffColor[top3Diff]},
             ]}>
+            <Text
+              style={{
+                color: 'black',
+                marginBottom: -10,
+                position: 'relative',
+                bottom: 20,
+              }}>
+              3위
+            </Text>
             <Animated.Text style={styles.rankTextStyle}>
               {top3[top3Diff][2]}
             </Animated.Text>
@@ -174,6 +184,15 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
               styles.graphLayout,
               {height: graphAnim[0], backgroundColor: diffColor[top3Diff]},
             ]}>
+            <Text
+              style={{
+                color: 'black',
+                marginBottom: -10,
+                position: 'relative',
+                bottom: 20,
+              }}>
+              1위
+            </Text>
             <Text style={styles.rankTextStyle}>{top3[top3Diff][0]}</Text>
           </Animated.View>
           <Animated.View
@@ -181,6 +200,15 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
               styles.graphLayout,
               {height: graphAnim[1], backgroundColor: diffColor[top3Diff]},
             ]}>
+            <Text
+              style={{
+                color: 'black',
+                marginBottom: -10,
+                position: 'relative',
+                bottom: 20,
+              }}>
+              2위
+            </Text>
             <Text style={styles.rankTextStyle}>{top3[top3Diff][1]}</Text>
           </Animated.View>
         </View>
