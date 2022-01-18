@@ -6,11 +6,15 @@ import {Arcade} from '../Game/ChallengeGame/Arcade';
 import {SpeedRun} from '../Game/ChallengeGame/SpeedRun';
 import {ChallengeGameSelect} from '../Game/ChallengeGame/ChallengeGameSelect';
 import {SpeedRunDifficulty} from '../Game/ChallengeGame/SpeedRunDifficulty';
+import {SpeedRunRankingList} from '../Game/ChallengeGame/SpeedRunRankingList';
 
 export type ChallengeGameStackType = {
   ChallengeGameSelect: undefined;
   Arcade: undefined;
   SpeedRun: {
+    difficulty: SpeedRunDifficulty;
+  };
+  SpeedRunRankingList: {
     difficulty: SpeedRunDifficulty;
   };
 };
@@ -66,6 +70,30 @@ export const ChallengeGameStack = () => {
           if (router.route.params.difficulty === 'Low') {
             return {
               title: 'SpeedRun - Low',
+            };
+          }
+          return {};
+        }}
+      />
+      <_ChallengeGameStack.Screen
+        name={'SpeedRunRankingList'}
+        component={SpeedRunRankingList}
+        options={(router) => {
+          if (router.route.params.difficulty === 'High') {
+            return {
+              title: 'SpeedRunRankingList - High',
+            };
+          }
+
+          if (router.route.params.difficulty === 'Intermediate') {
+            return {
+              title: 'SpeedRunRankingList - Intermediate',
+            };
+          }
+
+          if (router.route.params.difficulty === 'Low') {
+            return {
+              title: 'SpeedRunRankingLIst - Low',
             };
           }
           return {};

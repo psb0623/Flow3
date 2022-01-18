@@ -127,6 +127,10 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
     });
   };
 
+  const goRankingList = useCallback((difficulty: SpeedRunDifficulty) => {
+    navigation.navigate('SpeedRunRankingList', {difficulty});
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.HOFLayout}>
@@ -187,7 +191,11 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
           <Text style={styles.textStyle}>초급 </Text>
           <Text style={styles.rankTextStyle}>{lowRank}점 </Text>
           <View style={styles.buttonLayout}>
-            <BasicButton onPressed={() => {}} text={'순위표'}></BasicButton>
+            <BasicButton
+              onPressed={() => {
+                goRankingList('Low');
+              }}
+              text={'순위표'}></BasicButton>
           </View>
           <View style={styles.buttonLayout}>
             <BasicButton
@@ -202,7 +210,11 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
           <Text style={styles.textStyle}>중급</Text>
           <Text style={styles.rankTextStyle}>{intermediateRank}점 </Text>
           <View style={styles.buttonLayout}>
-            <BasicButton onPressed={() => {}} text={'순위표'}></BasicButton>
+            <BasicButton
+              onPressed={() => {
+                goRankingList('Intermediate');
+              }}
+              text={'순위표'}></BasicButton>
           </View>
           <View style={styles.buttonLayout}>
             <BasicButton
@@ -218,7 +230,11 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
           <Text style={styles.textStyle}>고급 </Text>
           <Text style={styles.rankTextStyle}>{highRank}점 </Text>
           <View style={styles.buttonLayout}>
-            <BasicButton onPressed={() => {}} text={'순위표'}></BasicButton>
+            <BasicButton
+              onPressed={() => {
+                goRankingList('High');
+              }}
+              text={'순위표'}></BasicButton>
           </View>
           <View style={styles.buttonLayout}>
             <BasicButton

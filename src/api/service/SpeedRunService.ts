@@ -11,7 +11,7 @@ export class SpeedRunService {
 
   public getMyRank = async (
     difficulty: SpeedRunDifficulty,
-    answerCount: string,
+    answerCount: number,
   ): Promise<AxiosResponse<number>> => {
     return this.request.get(
       `/ranking/${SpeedRunDifficultyMap[difficulty]}?my_ranking=${answerCount}`,
