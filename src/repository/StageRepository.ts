@@ -25,8 +25,15 @@ export class StageRepository implements IStageRepository {
 
   async saveLastClearStage3(lastStage: number): Promise<number> {
     try {
-      await AsyncStorage.setItem(`${this.LAST_CLEAR_3}`, lastStage.toString());
-      return lastStage;
+      const currentValue = parseInt(
+        (await AsyncStorage.getItem(`${this.LAST_CLEAR_3}`)) ?? '0',
+      );
+
+      await AsyncStorage.setItem(
+        `${this.LAST_CLEAR_3}`,
+        Math.max(lastStage, currentValue).toString(),
+      );
+      return Math.max(lastStage, currentValue);
     } catch (e) {
       throw e;
     }
@@ -46,8 +53,14 @@ export class StageRepository implements IStageRepository {
 
   async saveLastClearStage4(lastStage: number): Promise<number> {
     try {
-      await AsyncStorage.setItem(`${this.LAST_CLEAR_4}`, lastStage.toString());
-      return lastStage;
+      const currentValue = parseInt(
+        (await AsyncStorage.getItem(`${this.LAST_CLEAR_4}`)) ?? '0',
+      );
+      await AsyncStorage.setItem(
+        `${this.LAST_CLEAR_4}`,
+        Math.max(lastStage, currentValue).toString(),
+      );
+      return Math.max(lastStage, currentValue);
     } catch (e) {
       throw e;
     }
