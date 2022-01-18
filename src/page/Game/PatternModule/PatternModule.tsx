@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   patternRendererContainer: {
     width: '100%',
-    height: '30%',
+    height: '35%',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -91,6 +91,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    height: '70%',
+    height: '65%',
   },
 });

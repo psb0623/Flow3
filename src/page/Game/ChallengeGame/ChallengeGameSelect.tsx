@@ -131,21 +131,21 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.HOFLayout}>
         <View style={styles.rankingDifficultyLayout}>
-          <View style={styles.buttonLayout}>
+          <View style={styles.buttonBasicLayout}>
             <BasicButton
               onPressed={() => {
                 setTop3Diff(0);
               }}
               text={'초급 TOP3'}></BasicButton>
           </View>
-          <View style={styles.buttonLayout}>
+          <View style={styles.buttonBasicLayout}>
             <BasicButton
               onPressed={() => {
                 setTop3Diff(1);
               }}
               text={'중급 TOP3'}></BasicButton>
           </View>
-          <View style={styles.buttonLayout}>
+          <View style={styles.buttonBasicLayout}>
             <BasicButton
               onPressed={() => {
                 setTop3Diff(2);
@@ -199,7 +199,7 @@ export const ChallengeGameSelect = ({navigation}: Props) => {
         </View>
         <View
           style={[styles.difficultyLayout, {backgroundColor: diffColor[1]}]}>
-          <Text style={styles.textStyle}>중급 </Text>
+          <Text style={styles.textStyle}>중급</Text>
           <Text style={styles.rankTextStyle}>{intermediateRank}점 </Text>
           <View style={styles.buttonLayout}>
             <BasicButton onPressed={() => {}} text={'순위표'}></BasicButton>
@@ -324,5 +324,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 25,
+  },
+  buttonBasicLayout: {
+    flex: 1,
+    width: 0,
+    margin: 5,
   },
 });
