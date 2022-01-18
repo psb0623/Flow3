@@ -17,14 +17,16 @@ export const SpeedRunRankingList = ({
     params: {difficulty},
   },
 }: Props) => {
-  const [rankList, setRankList] = useState<GetRankListResponse | null>(null);
+  const [rankList, setRankList] = useState<GetRankListResponse['rows'] | null>(
+    null,
+  );
   const [myRank, setMyRank] = useState<number | null>(null);
   const [answerCount, setMyAnswerCount] = useState<number | null>(null);
 
   useEffect(() => {
     (async () => {
       const {data: _rankList} = await speedRunService.getRankList(difficulty);
-      setRankList(_rankList);
+      setRankList(_rankList.rows);
     })();
   }, []);
 
@@ -55,10 +57,10 @@ export const SpeedRunRankingList = ({
         flexDirection: 'column',
       }}>
       <View style={styles.rankingListContainer}>
-        {rankList && (
+        {rankList != null && (
           <FlatList
             style={{width: '100%'}}
-            data={rankList.rows}
+            data={rankList}
             keyExtractor={(item, index) => {
               return index.toString();
             }}
@@ -83,7 +85,7 @@ export const SpeedRunRankingList = ({
         )}
       </View>
       <View style={styles.myRankingContainer}>
-        {myRank && rankList && answerCount && (
+        {myRank != null && rankList != null && answerCount != null && (
           <>
             <Text style={{fontSize: 16}}>{`내 순위 (상위 ${(
               (myRank / rankList.length) *
